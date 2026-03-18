@@ -162,11 +162,25 @@
         @keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
 
         /* ── ABOUT ── */
+        /* ── ABOUT ── */
         #about {
             padding: 13rem 5rem;
-            display: grid; grid-template-columns: 1fr 1fr;
-            gap: 7rem; align-items: start;
-            max-width: 1400px; margin: 0 auto;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .about-top {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 7rem;
+            margin-bottom: 8rem;
+            align-items: start;
+        }
+        .about-grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 3.5rem;
+            padding-top: 5rem;
+            border-top: 1px solid var(--border);
         }
         .section-label {
             font-size: .9rem; letter-spacing: .32em; text-transform: uppercase;
@@ -181,20 +195,16 @@
         .about-text p {
             font-size: 1.05rem; line-height: 1.95; color: var(--muted); margin-bottom: 1.4rem;
         }
-        .about-stats {
-            display: grid; grid-template-columns: 1fr 1fr;
-            gap: 2rem; margin-top: 3.5rem;
-        }
-        .stat-item { border-top: 1px solid var(--border); padding-top: 1.4rem; }
+        .about-stats-col { display: flex; flex-direction: column; gap: 2.2rem; }
+        .stat-item { border-bottom: 1px solid var(--border); padding-bottom: 1.4rem; }
+        .stat-item:last-child { border-bottom: none; }
         .stat-number {
             font-family: 'Cormorant Garamond', serif;
-            font-size: 3.6rem; font-weight: 300;
+            font-size: 3.2rem; font-weight: 300;
             color: var(--accent); line-height: 1; margin-bottom: .4rem;
         }
-        .stat-label { font-size: .85rem; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
+        .stat-label { font-size: .81rem; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
 
-        /* About right column */
-        .about-right { display: flex; flex-direction: column; gap: 3.5rem; }
         .about-frame {
             width: 100%; aspect-ratio: 3/4;
             background: var(--card); border: 1px solid var(--border);
@@ -217,30 +227,28 @@
             padding: .5rem .9rem; writing-mode: vertical-rl;
         }
 
-        /* ── EDUCATION + SKILLS ── */
-        .edu-skills { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
-        .edu-block, .skills-block { display: flex; flex-direction: column; gap: 1.2rem; }
+        .grid-block { display: flex; flex-direction: column; gap: 1.2rem; }
         .block-title {
             font-size: .88rem; letter-spacing: .3em; text-transform: uppercase;
             color: var(--accent); padding-bottom: .8rem;
             border-bottom: 1px solid var(--border);
         }
-        .edu-item {}
         .edu-year { font-size: .85rem; color: var(--accent); letter-spacing: .1em; margin-bottom: .2rem; }
         .edu-name { font-family:'Cormorant Garamond',serif; font-size: 1.2rem; font-weight:300; margin-bottom: .15rem; }
         .edu-inst { font-size: .9rem; color: var(--muted); letter-spacing: .08em; }
 
         .skill-tags { display: flex; flex-wrap: wrap; gap: .5rem; }
         .skill-tag {
-            font-size: .85rem; letter-spacing: .14em; text-transform: uppercase;
+            font-size: .81rem; letter-spacing: .14em; text-transform: uppercase;
             border: 1px solid var(--border); padding: .4rem .8rem;
-            color: var(--muted); transition: border-color .3s, color .3s;
+            color: var(--text); transition: all .3s;
         }
-        .skill-tag:hover { border-color: var(--accent); color: var(--accent-lt); }
-        .skill-tag.soft { border-color: rgba(184,147,90,.2); color: rgba(184,147,90,.6); }
+        .skill-tag:hover { border-color: var(--accent); color: var(--accent); }
+        .skill-tag.soft { border-color: rgba(255,255,255,.1); color: rgba(255,255,255,0.7); }
 
         /* Reveal */
-        .reveal   { opacity: 0; transform: translateY(55px); }
+        .reveal { opacity: 0; transform: translateY(55px); }
+
 
         /* ── PROJECTS ── */
         #projects { padding: 5rem 0; }
@@ -526,7 +534,9 @@
             nav { padding: 1.5rem 2rem; }
             .nav-links { display: none; }
             .hero-content { padding: 0 2rem; max-width: 100%; }
-            #about { grid-template-columns: 1fr; padding: 7rem 2rem; gap: 4rem; }
+            #about { padding: 7rem 2rem; }
+            .about-top { grid-template-columns: 1fr; gap: 4rem; margin-bottom: 5rem; }
+            .about-grid-4 { grid-template-columns: repeat(2, 1fr); gap: 3rem; padding-top: 4rem; }
             .projects-header { padding: 0 2rem; }
             .projects-track { padding: 0 2rem 4rem; }
             .p-card { min-width: 280px; }
@@ -538,6 +548,118 @@
             footer { padding: 1.5rem 2rem; flex-direction: column; gap: 1rem; text-align: center; }
             .edu-skills { grid-template-columns: 1fr; }
             #quote { padding: 8rem 2rem; }
+            @media (max-width: 600px) {
+                .about-grid-4 { grid-template-columns: 1fr; }
+            }
+        }
+
+        /* ── GUIDE BUBBLE ── */
+        .guide-bubble {
+            position: fixed;
+            right: 2.5rem;
+            bottom: 2.5rem;
+            z-index: 1500;
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            padding: 1rem 1.4rem;
+            background: rgba(13, 15, 18, 0.75);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(184, 147, 90, 0.3);
+            border-radius: 4px;
+            color: var(--text);
+            font-family: 'DM Mono', monospace;
+            font-size: 0.72rem;
+            letter-spacing: 0.12em;
+            pointer-events: auto;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(.23,1,.32,1);
+            max-width: 290px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+        }
+
+        .guide-bubble.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .guide-close {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 24px;
+            height: 24px;
+            background: var(--accent);
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--bg);
+            opacity: 0;
+            transform: scale(0.5);
+            transition: opacity 0.4s, transform 0.4s;
+            z-index: 10;
+        }
+
+        .guide-bubble.active .guide-close {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .guide-close:hover {
+            transform: scale(1.15) rotate(90deg);
+            background: #fff;
+        }
+
+        .guide-close svg { width: 10px; fill: none; stroke: currentColor; stroke-width: 2.5; }
+
+        .guide-glow {
+            position: absolute;
+            inset: -40px;
+            background: radial-gradient(circle, var(--accent) 0%, transparent 65%);
+            filter: blur(35px);
+            opacity: 0;
+            z-index: -1;
+            pointer-events: none;
+            border-radius: 50%;
+            transform: scale(0.5);
+        }
+
+        .guide-bubble::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 20%;
+            bottom: 20%;
+            width: 2px;
+            background: var(--accent);
+            opacity: 0.8;
+        }
+
+        .guide-icon {
+            width: 18px;
+            height: 18px;
+            color: var(--accent);
+            flex-shrink: 0;
+            animation: guidePulse 2s infinite ease-in-out;
+        }
+
+        @keyframes guidePulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.3); opacity: 1; }
+        }
+
+        .guide-content {
+            line-height: 1.5;
+            text-transform: uppercase;
+        }
+
+        @media (max-width: 1100px) {
+            .guide-bubble { display: none; }
         }
 
         ::selection { background: var(--accent); color: var(--bg); }
@@ -550,6 +672,19 @@
 
 <div id="cursor"></div>
 <div id="cursor-ring"></div>
+
+<div id="guide-bubble" class="guide-bubble">
+    <div class="guide-glow"></div>
+    <button class="guide-close" id="guide-close-btn" aria-label="Cerrar guía">
+        <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
+    <div class="guide-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4"></path><path d="M12 8h.01"></path></svg>
+    </div>
+    <div class="guide-content">
+        <span id="guide-text">Explora el universo de Celeste.</span>
+    </div>
+</div>
 
 <!-- ─── NAV ─── -->
 <nav>
@@ -606,69 +741,40 @@
 
 <!-- ─── ABOUT ─── -->
 <section id="about">
-    <div>
-        <div class="section-label reveal">— Sobre mí</div>
-        <h2 class="about-heading reveal">Técnica,<br>sensibilidad<br>y <em>lugar</em></h2>
-        <div class="about-text">
-            <p class="reveal">
-                Mi perfil combina una sólida base técnica, adquirida desde mi formación como Maestra Mayor de Obras,
-                con una capacidad creativa orientada a la resolución de sistemas constructivos complejos.
-            </p>
-            <p class="reveal">
-                Me destaco por mi sensibilidad para comunicar conceptos y crear atmósferas únicas.
-                Soy apasionada por el diseño integral y el aprendizaje continuo — concibo la arquitectura
-                como el equilibrio perfecto entre precisión técnica y experiencias sensoriales significativas.
-            </p>
-        </div>
-        <div class="about-stats">
-            <div class="stat-item reveal">
-                <div class="stat-number" data-count="4">0</div>
-                <div class="stat-label">Proyectos académicos</div>
-            </div>
-            <div class="stat-item reveal">
-                <div class="stat-number" data-count="2025">0</div>
-                <div class="stat-label">Año de graduación</div>
-            </div>
-            <div class="stat-item reveal">
-                <div class="stat-number" data-count="6">0</div>
-                <div class="stat-label">Años de formación técnica</div>
-            </div>
-            <div class="stat-item reveal">
-                <div class="stat-number" data-count="10" data-suffix="+">0</div>
-                <div class="stat-label">Softwares</div>
+    <div class="about-top">
+        <div>
+            <div class="section-label reveal">— Sobre mí</div>
+            <h2 class="about-heading reveal">Técnica,<br>sensibilidad<br>y <em>lugar</em></h2>
+            <div class="about-text">
+                <p class="reveal">
+                    Mi perfil combina una sólida base técnica, adquirida desde mi formación como Maestra Mayor de Obras,
+                    con una capacidad creativa orientada a la resolución de sistemas constructivos complejos.
+                </p>
+                <p class="reveal">
+                    Me destaco por mi sensibilidad para comunicar conceptos e imágenes y crear atmósferas únicas.
+                    Soy apasionada por el diseño integral y el aprendizaje continuo — concibo la arquitectura
+                    como el equilibrio perfecto entre precisión técnica y experiencias sensoriales significativas.
+                </p>
             </div>
         </div>
-    </div>
 
-    <div class="about-right">
         <div style="position:relative;">
             <div class="about-frame reveal">
-                <!-- FOTO DE CELESTE — renombra tu imagen como: assets/img/foto-celeste-perfil.jpg -->
                 <img src="assets/img/foto-celeste-perfil1.jpg" alt="Arq. Celeste Celaya" class="about-photo"
                      onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
-                <!-- Plano de respaldo si no hay foto aún -->
                 <svg viewBox="0 0 280 380" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity:.16">
-                    <!-- Gran cubierta -->
                     <rect x="20" y="60" width="240" height="290" stroke="#b8935a" stroke-width=".8"/>
-                    <!-- Cilindro central -->
                     <circle cx="140" cy="200" r="42" stroke="#b8935a" stroke-width=".7"/>
                     <circle cx="140" cy="200" r="28" stroke="#b8935a" stroke-width=".4" stroke-dasharray="4 3"/>
-                    <!-- Programa izquierdo: bodega -->
                     <rect x="30" y="80" width="85" height="105" stroke="#b8935a" stroke-width=".4"/>
-                    <!-- Programa derecho: museo -->
                     <rect x="165" y="80" width="85" height="105" stroke="#b8935a" stroke-width=".4"/>
-                    <!-- Área turística inferior -->
                     <rect x="30" y="295" width="220" height="45" stroke="#b8935a" stroke-width=".4"/>
-                    <!-- Patio central -->
                     <rect x="125" y="200" width="30" height="85" stroke="#b8935a" stroke-width=".3" stroke-dasharray="3 3"/>
-                    <!-- Eje de simetría -->
                     <line x1="140" y1="60" x2="140" y2="350" stroke="#b8935a" stroke-width=".35" stroke-dasharray="5 4"/>
-                    <!-- Cotas -->
                     <line x1="8" y1="60"  x2="20" y2="60"  stroke="#b8935a" stroke-width=".35"/>
                     <line x1="8" y1="350" x2="20" y2="350" stroke="#b8935a" stroke-width=".35"/>
                     <line x1="8" y1="60"  x2="8"  y2="350" stroke="#b8935a" stroke-width=".35"/>
                     <text x="-4" y="210" fill="#b8935a" font-size="6.5" font-family="DM Mono" transform="rotate(-90,-4,210)">290 m</text>
-                    <!-- Ruta -->
                     <line x1="20" y1="370" x2="260" y2="370" stroke="#b8935a" stroke-width=".5" stroke-dasharray="8 4"/>
                     <text x="100" y="378" fill="#b8935a" font-size="5.5" font-family="DM Mono">RN 40</text>
                 </svg>
@@ -676,49 +782,63 @@
             </div>
             <div class="about-badge">FAU · UCASAL 2025</div>
         </div>
+    </div>
 
-        <!-- Educación + Skills -->
-        <div class="edu-skills reveal">
-            <div class="edu-block">
-                <div class="block-title">Educación</div>
-                <div class="edu-item">
-                    <div class="edu-year">2021 — 2025</div>
-                    <div class="edu-name">Arquitectura</div>
-                    <div class="edu-inst">FAU · Universidad Católica de Salta</div>
+    <div class="about-grid-4 reveal">
+        <!-- Trayectoria -->
+        <div class="grid-block">
+            <div class="block-title">Trayectoria</div>
+            <div class="about-stats-col">
+                <div class="stat-item">
+                    <div class="stat-number" data-count="16">0</div>
+                    <div class="stat-label">Proyectos Académicos</div>
                 </div>
-                <div class="edu-item" style="margin-top:1.2rem">
-                    <div class="edu-year">2014 — 2020</div>
-                    <div class="edu-name">Maestro Mayor de Obras</div>
-                    <div class="edu-inst">E.E.T. 3149 Dr. Mera Figueroa</div>
+                <div class="stat-item">
+                    <div class="stat-number" data-count="2025">0</div>
+                    <div class="stat-label">Año de Graduación</div>
                 </div>
             </div>
-            <div class="skills-block">
-                <div class="block-title">Software</div>
-                <div class="skill-tags">
-                    <span class="skill-tag">AutoCAD</span>
-                    <span class="skill-tag">Sketchup</span>
-                    <span class="skill-tag">Revit</span>
-                    <span class="skill-tag">Enscape</span>
-                    <span class="skill-tag">Lumion</span>
-                    <span class="skill-tag">V-Ray</span>
-                    <span class="skill-tag">Photoshop</span>
-                    <span class="skill-tag">Illustrator</span>
-                    <span class="skill-tag">Adobe InDesign</span>
-                    <span class="skill-tag">Rhino 3D</span>
-                    <span class="skill-tag">Grasshopper</span>
-                    <span class="skill-tag">3ds Max + V-Ray</span>
-                    <span class="skill-tag">Twinmotion</span>
-                    <span class="skill-tag">Archicad</span>
-                </div>
-                <div class="block-title" style="margin-top:1.4rem">Habilidades</div>
-                <div class="skill-tags">
-                    <span class="skill-tag soft">Creatividad</span>
-                    <span class="skill-tag soft">Resolución de problemas</span>
-                    <span class="skill-tag soft">Trabajo en equipo</span>
-                    <span class="skill-tag soft">Comunicación eficaz</span>
-                    <span class="skill-tag soft">Pensamiento crítico</span>
-                    <span class="skill-tag soft">Adaptabilidad</span>
-                </div>
+        </div>
+
+        <!-- Educación -->
+        <div class="grid-block">
+            <div class="block-title">Educación</div>
+            <div class="edu-item">
+                <div class="edu-year">2021 — 2025</div>
+                <div class="edu-name">Arquitectura</div>
+                <div class="edu-inst">FAU · UCASAL</div>
+            </div>
+            <div class="edu-item" style="margin-top:0.8rem">
+                <div class="edu-year">2014 — 2020</div>
+                <div class="edu-name">Maestra Mayor de Obras</div>
+                <div class="edu-inst">E.E.T. 3149</div>
+            </div>
+        </div>
+
+        <!-- Software -->
+        <div class="grid-block">
+            <div class="block-title">Software</div>
+            <div class="skill-tags">
+                <span class="skill-tag">AutoCAD</span>
+                <span class="skill-tag">Revit</span>
+                <span class="skill-tag">Sketchup</span>
+                <span class="skill-tag">Enscape</span>
+                <span class="skill-tag">V-Ray</span>
+                <span class="skill-tag">Photoshop</span>
+                <span class="skill-tag">Archicad</span>
+                <span class="skill-tag">Lumion</span>
+            </div>
+        </div>
+
+        <!-- Habilidades -->
+        <div class="grid-block">
+            <div class="block-title">Habilidades</div>
+            <div class="skill-tags">
+                <span class="skill-tag soft">Creatividad</span>
+                <span class="skill-tag soft">Resolución</span>
+                <span class="skill-tag soft">Trabajo en Equipo</span>
+                <span class="skill-tag soft">Comunicación</span>
+                <span class="skill-tag soft">Pensamiento Crítico</span>
             </div>
         </div>
     </div>
@@ -1070,7 +1190,7 @@
 <footer>
     <p>© 2026 Celeste Celaya · Arquitecta | Maestra Mayor de Obras — FAU · UCASAL</p>
     <div class="footer-links">
-        <a href="#">Instagram</a>
+        <a href="https://www.instagram.com/cece_arq?igsh=ZHIzeDk0ZHp5bnJs" target="_blank">Instagram</a>
         <a href="https://www.linkedin.com/in/celeste-daiana-celaya-r%C3%ADos-4700783a6/?originalSubdomain=ar" target="_blank">LinkedIn</a>
         <a href="https://wa.me/543874421631" target="_blank">WhatsApp</a>
     </div>
@@ -1531,6 +1651,110 @@ window.addEventListener('keydown', (e) => {
         if (e.key === 'ArrowLeft') lightbox.querySelector('.prev').click();
     }
 });
+
+// ── GUIDE BUBBLE LOGIC ──────────────────────────────────────
+const guideBubble = document.getElementById('guide-bubble');
+const guideText   = document.getElementById('guide-text');
+const guideClose  = document.getElementById('guide-close-btn');
+
+let guideDismissed = false;
+
+guideClose.addEventListener('click', () => {
+    guideDismissed = true;
+    gsap.to(guideBubble, { opacity: 0, scale: 0.8, y: 20, duration: 0.5, onComplete: () => {
+        guideBubble.style.display = 'none';
+    }});
+});
+
+const guides = [
+    { id: '#hero', text: 'Desliza hacia abajo para comenzar a explorar.' },
+    { id: '#about', text: 'Sigue bajando para conocer mi trayectoria.' },
+    { id: '#projects', text: 'Desliza para ver proyectos o toca para ver detalles.' },
+    { id: '#services', text: 'Continúa desplazándote para ver servicios.' },
+    { id: '#experience', text: 'Casi al final: Sigue bajando.' },
+    { id: '#contact', text: 'Haz clic en los enlaces para contactar.' }
+];
+
+guides.forEach(g => {
+    ScrollTrigger.create({
+        trigger: g.id,
+        start: 'top 60%',
+        end: 'bottom 40%',
+        onEnter: () => { if(!guideDismissed) updateGuide(g.text); },
+        onEnterBack: () => { if(!guideDismissed) updateGuide(g.text); },
+        onLeave: () => { if(g.id === '#contact') guideBubble.classList.remove('active'); },
+        onLeaveBack: () => { if(g.id === '#hero' && !guideDismissed) guideBubble.classList.remove('active'); }
+    });
+});
+
+function updateGuide(newText) {
+    if (guideText.innerText === newText || guideDismissed) return;
+    
+    guideBubble.classList.add('active');
+    gsap.to(guideText, {
+        opacity: 0, scale: 0.9, duration: 0.3, 
+        onComplete: () => {
+            guideText.innerText = newText;
+            gsap.to(guideText, { opacity: 1, scale: 1, duration: 0.4 });
+        }
+    });
+}
+
+// Entrance animation on first load
+window.addEventListener('load', () => {
+    setTimeout(() => {
+        const content = guideBubble.querySelector('.guide-content');
+        const icon    = guideBubble.querySelector('.guide-icon');
+        const glow    = guideBubble.querySelector('.guide-glow');
+        
+        const tl = gsap.timeline();
+        
+        // 1. Entrance
+        tl.to(guideBubble, { 
+            opacity: 1, y: 0, scale: 1, 
+            duration: 1.2, ease: 'elastic.out(1, 0.6)',
+            onStart: () => guideBubble.classList.add('active')
+        })
+        // 2. Highlight (Size + Color + Glow)
+        .to(guideBubble, {
+            scale: 1.2,
+            backgroundColor: 'var(--accent)',
+            borderColor: 'var(--accent)',
+            color: 'var(--bg)',
+            duration: 0.6,
+            ease: 'power2.out'
+        }, "+=0.4")
+        .to([content, icon], { color: 'var(--bg)', duration: 0.3 }, "<")
+        .to(glow, { 
+            opacity: 0.9, scale: 1.8, x: 60, 
+            duration: 0.5, ease: 'power2.out' 
+        }, "<")
+        
+        // Moving glow behind
+        tl.to(glow, { 
+            x: -60, duration: 1.5, 
+            ease: 'power1.inOut', 
+            repeat: 1, yoyo: true 
+        })
+        
+        // 3. Back to normal
+        .to(guideBubble, {
+            scale: 1,
+            backgroundColor: 'rgba(13, 15, 18, 0.75)',
+            borderColor: 'rgba(184, 147, 90, 0.3)',
+            color: 'var(--text)',
+            duration: 1,
+            ease: 'expo.out'
+        }, "-=0.5")
+        .to(content, { color: 'var(--text)', duration: 0.6 }, "<")
+        .to(icon, { color: 'var(--accent)', duration: 0.6 }, "<")
+        .to(glow, { opacity: 0, scale: 0.5, duration: 0.8 }, "<");
+
+    }, 3800); 
+});
+
+
+
 </script>
 </body>
 </html>
