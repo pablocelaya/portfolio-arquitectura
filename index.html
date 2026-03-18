@@ -346,69 +346,51 @@
         }
         .p-card:hover .p-desc { opacity: 1; transform: translateX(0); }
 
-        /* ── PORTRAIT ── */
-        #portrait {
-            padding: 0 5rem 10rem;
-            display: flex; flex-direction: column; align-items: center;
-            position: relative;
+        /* ── CONTACT ── */
+        #contact {
+            padding: 12rem 5rem;
+            display: grid; grid-template-columns: 1.2fr 1fr 0.8fr;
+            gap: 5rem; align-items: center;
+            border-top: 1px solid var(--border);
         }
-        .portrait-glow {
-            position: absolute; top: 45%; left: 50%; width: 70vw; height: 70vw;
-            background: radial-gradient(circle, 
-                rgba(255, 140, 0, 0.28) 0%, 
-                rgba(184, 147, 90, 0.12) 40%, 
-                transparent 75%
-            );
-            transform: translate(-50%, -50%); pointer-events: none; z-index: 0;
-            filter: blur(80px);
-            opacity: 1;
+        .contact-heading {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(3rem, 6vw, 7rem);
+            font-weight: 300; line-height: .9;
+            letter-spacing: -.02em; margin-top: 1.5rem;
         }
-        .portrait-frame {
-            width: 42vw; max-width: 560px; min-width: 280px;
-            aspect-ratio: 3/4;
-            position: relative; overflow: hidden;
-            background: var(--card);
-            border: 1px solid var(--border);
-            box-shadow: 0 40px 100px rgba(0,0,0,.55);
-            z-index: 1;
-        }
+        .contact-heading em { font-style: italic; color: var(--accent); }
 
-        .portrait-frame img {
+        .contact-visual {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            order: 3;
+        }
+        .contact-frame {
+            width: 100%; aspect-ratio: 4/5;
+            background: var(--card); border: 1px solid var(--border);
+            position: relative; overflow: hidden;
+            box-shadow: 0 40px 100px rgba(0,0,0,.45);
+        }
+        .contact-frame img {
             width: 100%; height: 100%; object-fit: cover; object-position: top center;
-            display: block;
-            filter: grayscale(15%) contrast(1.05);
+            filter: grayscale(15%) contrast(1.02);
             transition: transform .8s cubic-bezier(.23,1,.32,1), filter .6s;
         }
-        .portrait-frame:hover img { transform: scale(1.04); filter: grayscale(0%) contrast(1); }
-        /* Placeholder cuando no hay foto todavía */
-        .portrait-placeholder {
-            position: absolute; inset: 0;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            gap: 1.4rem; border: 1px dashed rgba(184,147,90,.25); margin: 2rem;
+        .contact-frame:hover img { transform: scale(1.05); filter: grayscale(0%) contrast(1); }
+        .contact-frame::after {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(to top, rgba(7,8,10,0.4) 0%, transparent 40%);
+            pointer-events: none;
         }
-        .portrait-placeholder span {
-            font-size: .82rem; letter-spacing: .2em; text-transform: uppercase; color: var(--muted);
-        }
-        .portrait-corner {
-            position: absolute; width: 22px; height: 22px;
-            border-color: rgba(184,147,90,.4); border-style: solid;
-        }
-        .portrait-corner.tl { top: 16px; left: 16px; border-width: 1px 0 0 1px; }
-        .portrait-corner.tr { top: 16px; right: 16px; border-width: 1px 1px 0 0; }
-        .portrait-corner.bl { bottom: 16px; left: 16px; border-width: 0 0 1px 1px; }
-        .portrait-corner.br { bottom: 16px; right: 16px; border-width: 0 1px 1px 0; }
-        .portrait-caption {
-            margin-top: 2rem; text-align: center;
-        }
-        .portrait-caption h3 {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: clamp(1.6rem, 3vw, 2.4rem);
-            font-weight: 300; letter-spacing: .02em; margin-bottom: .5rem;
-        }
-        .portrait-caption h3 em { font-style: italic; color: var(--accent); }
-        .portrait-caption p {
-            font-size: .88rem; letter-spacing: .22em; text-transform: uppercase; color: var(--muted);
-        }
+
+        .contact-items { display: flex; flex-direction: column; gap: 2.5rem; order: 2; }
+        .c-item { border-bottom: 1px solid var(--border); padding-bottom: 1.6rem; }
+        .c-label { font-size: .85rem; letter-spacing: .25em; text-transform: uppercase; color: var(--muted); margin-bottom: .45rem; }
+        .c-value { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 300; }
+        .c-value a { color: inherit; text-decoration: none; transition: color .3s; }
+        .c-value a:hover { color: var(--accent); }
 
         /* ── LIGHTBOX (PRO) ── */
         #lightbox {
@@ -524,26 +506,6 @@
         .exp-body { font-size: 1rem; line-height: 1.85; color: var(--muted); }
         .exp-tag { font-size: .85rem; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); padding-top: .3rem; }
 
-        /* ── CONTACT ── */
-        #contact {
-            padding: 12rem 5rem;
-            display: grid; grid-template-columns: 1fr 1fr;
-            gap: 7rem; align-items: center;
-            border-top: 1px solid var(--border);
-        }
-        .contact-heading {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: clamp(3rem, 6vw, 7rem);
-            font-weight: 300; line-height: .9;
-            letter-spacing: -.02em; margin-top: 1.5rem;
-        }
-        .contact-heading em { font-style: italic; color: var(--accent); }
-        .contact-items { display: flex; flex-direction: column; gap: 2.5rem; }
-        .c-item { border-bottom: 1px solid var(--border); padding-bottom: 2rem; }
-        .c-label { font-size: .85rem; letter-spacing: .25em; text-transform: uppercase; color: var(--muted); margin-bottom: .45rem; }
-        .c-value { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 300; }
-        .c-value a { color: inherit; text-decoration: none; transition: color .3s; }
-        .c-value a:hover { color: var(--accent); }
 
         /* ── FOOTER ── */
         footer {
@@ -762,14 +724,6 @@
     </div>
 </section>
 
-<!-- ─── PORTRAIT ─── -->
-<section id="portrait">
-    <div class="portrait-glow"></div>
-    <div class="portrait-frame reveal">
-        <img src="assets/img/foto-celeste-retrato1.jpg" alt="Arq. Celeste Celaya"
-             onerror="this.style.display='none'">
-    </div>
-</section>
 
 <!-- ─── PROJECTS ─── -->
 <section id="projects">
@@ -1074,12 +1028,13 @@
 
 <!-- ─── CONTACT ─── -->
 <section id="contact">
-    <div>
+    <div style="order:1">
         <div class="section-label reveal">— Contacto</div>
         <h2 class="contact-heading reveal">
             Hablemos<br>de tu<br><em>proyecto</em>
         </h2>
     </div>
+
     <div class="contact-items">
         <div class="c-item reveal">
             <div class="c-label">Email</div>
@@ -1100,6 +1055,13 @@
         <div class="c-item reveal">
             <div class="c-label">Idiomas</div>
             <div class="c-value">Español · Inglés básico</div>
+        </div>
+    </div>
+
+    <div class="contact-visual reveal">
+        <div class="contact-frame">
+            <img src="assets/img/foto-celeste-retrato1.jpg" alt="Arq. Celeste Celaya"
+                 onerror="this.style.display='none'">
         </div>
     </div>
 </section>
