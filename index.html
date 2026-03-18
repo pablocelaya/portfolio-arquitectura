@@ -1,0 +1,1561 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Celeste Celaya — Arquitecta | Salta, Argentina</title>
+    <meta name="description" content="Arq. Celeste Celaya — Arquitecta y Maestra Mayor de Obras graduada en la FAU-UCASAL 2025. Proyectos residenciales, agroindustriales y educativos en Salta, Argentina.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link rel="shortcut icon" href="favicon.png" type="image/png">
+
+    <style>
+        :root {
+            --bg:         #07080a;
+            --bg2:        #0d0f12;
+            --text:       #e8e4dc;
+            --muted:      #ffffff;
+            --accent:     #b8935a;
+            --accent-dim: #7a5e38;
+            --accent-lt:  #d4aa77;
+            --border:     #1a1c1f;
+            --card:       #0d0e11;
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'DM Mono', monospace;
+            font-weight: 300;
+            overflow-x: hidden;
+            cursor: none;
+        }
+
+        /* ── Foto perfil + Imágenes proyectos ── */
+        .about-photo {
+            width: 100%; height: 100%; object-fit: cover; object-position: top center;
+            opacity: 0.88; filter: grayscale(25%) contrast(1.05);
+            transition: filter 0.6s, opacity 0.6s;
+        }
+        .about-frame:hover .about-photo { filter: grayscale(0%) contrast(1); opacity: 1; }
+        .p-image {
+            position: absolute; inset: 0; width: 100%; height: 100%;
+            object-fit: cover; opacity: 0.55; mix-blend-mode: luminosity;
+            transition: transform .7s cubic-bezier(.23,1,.32,1), opacity .5s, mix-blend-mode .5s;
+            z-index: 1;
+        }
+        .p-card:hover .p-image { transform: scale(1.06); mix-blend-mode: normal; opacity: 0.82; }
+
+        /* ── Cursor ── */
+        #cursor {
+            position: fixed; width: 7px; height: 7px;
+            background: var(--accent); border-radius: 50%;
+            pointer-events: none; z-index: 10000;
+            transform: translate(-50%,-50%);
+        }
+        #cursor-ring {
+            position: fixed; width: 34px; height: 34px;
+            border: 1px solid rgba(184,147,90,.45); border-radius: 50%;
+            pointer-events: none; z-index: 10000;
+            transform: translate(-50%,-50%);
+        }
+
+        /* ── NAV ── */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 900;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 2rem 5rem;
+        }
+        nav::before {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(to bottom,rgba(7,8,10,.92) 0%,transparent 100%);
+            pointer-events: none;
+        }
+        .nav-logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.05rem; font-weight: 300; letter-spacing: .22em;
+            color: var(--text); text-decoration: none; position: relative; z-index: 1;
+        }
+        .nav-links { display: flex; gap: 2.5rem; list-style: none; position: relative; z-index: 1; }
+        .nav-links a {
+            font-size: .9rem; letter-spacing: .22em; text-transform: uppercase;
+            color: var(--muted); text-decoration: none; transition: color .3s;
+        }
+        .nav-links a:hover { color: var(--accent); }
+
+        /* ── HERO ── */
+        #hero { position: relative; height: 100vh; display: flex; align-items: center; overflow: hidden; }
+        #hero-canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+        .hero-content { position: relative; z-index: 10; padding: 0 5rem; max-width: 56%; }
+        .hero-eyebrow {
+            font-size: .9rem; letter-spacing: .38em; text-transform: uppercase;
+            color: var(--accent); margin-bottom: 2.2rem;
+            opacity: 0; transform: translateY(16px);
+        }
+        .hero-name {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(4.5rem, 8.5vw, 9.5rem);
+            font-weight: 300; line-height: .88; letter-spacing: -.02em; margin-bottom: 2.5rem;
+        }
+        .hero-name .line { display: block; overflow: hidden; }
+        .hero-name .word { display: inline-block; transform: translateY(108%); }
+        .hero-name em { font-style: italic; color: var(--accent); }
+        .hero-desc {
+            font-size: 1.05rem; line-height: 1.9; color: var(--muted);
+            max-width: 420px; opacity: 0; transform: translateY(16px); margin-bottom: 3rem;
+        }
+        .hero-cta {
+            display: inline-flex; align-items: center; gap: 1rem;
+            font-size: .9rem; letter-spacing: .3em; text-transform: uppercase;
+            color: var(--text); text-decoration: none;
+            opacity: 0; transform: translateY(16px); transition: color .3s;
+        }
+        .hero-cta::before {
+            content: ''; display: inline-block; width: 44px; height: 1px;
+            background: var(--accent); transition: width .4s;
+        }
+        .hero-cta:hover { color: var(--accent); }
+        .hero-cta:hover::before { width: 90px; }
+        .scroll-indicator {
+            position: absolute; bottom: 2.5rem; right: 5rem; z-index: 10;
+            display: flex; flex-direction: column; align-items: center; gap: .7rem; opacity: 0;
+        }
+        .scroll-indicator span {
+            font-size: .82rem; letter-spacing: .25em; text-transform: uppercase;
+            color: var(--muted); writing-mode: vertical-rl;
+        }
+        .scroll-line {
+            width: 1px; height: 64px;
+            background: linear-gradient(to bottom,var(--accent),transparent);
+            animation: linePulse 2.2s infinite ease-in-out;
+        }
+        @keyframes linePulse {
+            0%   { transform:scaleY(0); transform-origin:top; opacity:1; }
+            50%  { transform:scaleY(1); transform-origin:top; opacity:1; }
+            51%  { transform:scaleY(1); transform-origin:bottom; }
+            100% { transform:scaleY(0); transform-origin:bottom; opacity:0; }
+        }
+
+        /* ── MARQUEE ── */
+        .marquee-section {
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            padding: 1.3rem 0; overflow: hidden;
+        }
+        .marquee-track {
+            display: flex; white-space: nowrap;
+            animation: marquee 26s linear infinite;
+        }
+        .marquee-item {
+            display: inline-flex; align-items: center; gap: 3rem;
+            font-size: .88rem; letter-spacing: .28em; text-transform: uppercase;
+            color: var(--muted); padding: 0 3rem;
+        }
+        .marquee-item span { color: var(--accent); font-size: .75rem; }
+        @keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+        /* ── ABOUT ── */
+        #about {
+            padding: 13rem 5rem;
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 7rem; align-items: start;
+            max-width: 1400px; margin: 0 auto;
+        }
+        .section-label {
+            font-size: .9rem; letter-spacing: .32em; text-transform: uppercase;
+            color: var(--accent); margin-bottom: 1.8rem;
+        }
+        .about-heading {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2.8rem, 5vw, 5.2rem);
+            font-weight: 300; line-height: 1.05; letter-spacing: -.015em; margin-bottom: 2.5rem;
+        }
+        .about-heading em { font-style: italic; color: var(--accent); }
+        .about-text p {
+            font-size: 1.05rem; line-height: 1.95; color: var(--muted); margin-bottom: 1.4rem;
+        }
+        .about-stats {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 2rem; margin-top: 3.5rem;
+        }
+        .stat-item { border-top: 1px solid var(--border); padding-top: 1.4rem; }
+        .stat-number {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 3.6rem; font-weight: 300;
+            color: var(--accent); line-height: 1; margin-bottom: .4rem;
+        }
+        .stat-label { font-size: .85rem; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
+
+        /* About right column */
+        .about-right { display: flex; flex-direction: column; gap: 3.5rem; }
+        .about-frame {
+            width: 100%; aspect-ratio: 3/4;
+            background: var(--card); border: 1px solid var(--border);
+            position: relative; overflow: hidden;
+        }
+        .about-frame::before {
+            content: ''; position: absolute; inset: 24px;
+            border: 1px solid rgba(184,147,90,.1);
+        }
+        .about-frame svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+        .about-frame-label {
+            position: absolute; bottom: 1.8rem; left: 1.8rem;
+            font-size: .82rem; letter-spacing: .28em;
+            text-transform: uppercase; color: var(--muted);
+        }
+        .about-badge {
+            position: absolute; top: 2.5rem; right: -1.8rem;
+            background: var(--accent); color: var(--bg);
+            font-size: .82rem; letter-spacing: .18em; text-transform: uppercase;
+            padding: .5rem .9rem; writing-mode: vertical-rl;
+        }
+
+        /* ── EDUCATION + SKILLS ── */
+        .edu-skills { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        .edu-block, .skills-block { display: flex; flex-direction: column; gap: 1.2rem; }
+        .block-title {
+            font-size: .88rem; letter-spacing: .3em; text-transform: uppercase;
+            color: var(--accent); padding-bottom: .8rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .edu-item {}
+        .edu-year { font-size: .85rem; color: var(--accent); letter-spacing: .1em; margin-bottom: .2rem; }
+        .edu-name { font-family:'Cormorant Garamond',serif; font-size: 1.2rem; font-weight:300; margin-bottom: .15rem; }
+        .edu-inst { font-size: .9rem; color: var(--muted); letter-spacing: .08em; }
+
+        .skill-tags { display: flex; flex-wrap: wrap; gap: .5rem; }
+        .skill-tag {
+            font-size: .85rem; letter-spacing: .14em; text-transform: uppercase;
+            border: 1px solid var(--border); padding: .4rem .8rem;
+            color: var(--muted); transition: border-color .3s, color .3s;
+        }
+        .skill-tag:hover { border-color: var(--accent); color: var(--accent-lt); }
+        .skill-tag.soft { border-color: rgba(184,147,90,.2); color: rgba(184,147,90,.6); }
+
+        /* Reveal */
+        .reveal   { opacity: 0; transform: translateY(55px); }
+
+        /* ── PROJECTS ── */
+        #projects { padding: 5rem 0; }
+        .projects-header {
+            padding: 0 5rem;
+            display: flex; justify-content: space-between; align-items: flex-end;
+            margin-bottom: 4rem;
+        }
+        .projects-heading {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2.5rem, 5vw, 5rem);
+            font-weight: 300; line-height: 1.05;
+        }
+        .projects-heading em { font-style: italic; color: var(--accent); }
+        .projects-count { font-size: .9rem; letter-spacing: .2em; color: var(--muted); }
+
+        /* Deck container — centrado, sin overflow oculto para que las cartas salgan */
+        .projects-scroll-outer { overflow: visible; display: flex; justify-content: center; }
+        .projects-track {
+            position: relative;
+            width: 38vw; min-width: 320px; max-width: 480px;
+            aspect-ratio: 2/3;
+            flex-shrink: 0;
+        }
+
+        /* Cartas — apiladas absolutas sobre el deck */
+        .p-card {
+            position: absolute; inset: 0;
+            width: 100%; height: 100%;
+            cursor: none;
+        }
+        .p-card-inner {
+            position: relative; width: 100%; height: 100%;
+            background: var(--card); overflow: hidden;
+            box-shadow: 0 28px 70px rgba(0,0,0,.65), 0 8px 20px rgba(0,0,0,.4);
+            transition: box-shadow .4s;
+        }
+        .p-card:hover .p-card-inner { box-shadow: 0 36px 90px rgba(0,0,0,.75), 0 12px 28px rgba(0,0,0,.5); }
+        .p-bg { position: absolute; inset: 0; transition: transform .6s cubic-bezier(.23,1,.32,1); }
+        .p-card:hover .p-bg { transform: scale(1.06); }
+
+        /* Project backgrounds — all themed around Valle Calchaquí / Salta landscape palette */
+        .p-bg-1 { background: repeating-linear-gradient(0deg,transparent,transparent 48px,rgba(184,147,90,.04) 48px,rgba(184,147,90,.04) 49px), repeating-linear-gradient(90deg,transparent,transparent 48px,rgba(184,147,90,.04) 48px,rgba(184,147,90,.04) 49px), linear-gradient(150deg,#130d06 0%,#07080a 100%); }
+        .p-bg-2 { background: radial-gradient(ellipse at 35% 60%,rgba(184,147,90,.09) 0%,transparent 55%),linear-gradient(210deg,#0e0b07 0%,#07080a 100%); }
+        .p-bg-3 { background: repeating-linear-gradient(60deg,transparent,transparent 40px,rgba(184,147,90,.03) 40px,rgba(184,147,90,.03) 41px),linear-gradient(170deg,#070d10 0%,#07080a 100%); }
+        .p-bg-4 { background: radial-gradient(ellipse at 65% 30%,rgba(184,147,90,.07) 0%,transparent 50%),repeating-linear-gradient(90deg,transparent,transparent 32px,rgba(184,147,90,.025) 32px,rgba(184,147,90,.025) 33px),linear-gradient(330deg,#0b0e08 0%,#07080a 100%); }
+
+        .p-drawing {
+            position: absolute; inset: 28px; z-index: 2;
+            opacity: .13; transition: opacity .5s;
+        }
+        .p-card:hover .p-drawing { opacity: .3; }
+        .p-overlay {
+            position: absolute; inset: 0; z-index: 3;
+            background: linear-gradient(to right, rgba(7,8,10,0.85) 0%, rgba(7,8,10,0.4) 40%, transparent 100%);
+            display: flex; flex-direction: column; justify-content: flex-end; padding: 3.5rem 2.8rem;
+        }
+        .p-hint {
+            position: absolute; top: 1.8rem; left: 50%; transform: translateX(-50%);
+            font-size: .7rem; letter-spacing: .22em; text-transform: uppercase;
+            color: var(--bg); background: var(--accent);
+            padding: .5rem 1.2rem; border-radius: 20px;
+            font-weight: 400; opacity: 0;
+            box-shadow: 0 4px 15px rgba(184,147,90,.35);
+            transition: opacity .4s, transform .4s;
+            pointer-events: none;
+            z-index: 10;
+        }
+        .p-card:hover .p-hint { 
+            opacity: 1; 
+            animation: hintPulse 1.8s infinite ease-in-out;
+        }
+        @keyframes hintPulse { 
+            0% { transform: translate(-50%, 0) scale(1); box-shadow: 0 4px 15px rgba(184,147,90,.3); } 
+            50% { transform: translate(-50%, -4px) scale(1.03); box-shadow: 0 8px 25px rgba(184,147,90,.5); } 
+            100% { transform: translate(-50%, 0) scale(1); box-shadow: 0 4px 15px rgba(184,147,90,.3); } 
+        }
+        .p-num { position: absolute; top: 1.8rem; right: 1.8rem; font-size: .85rem; letter-spacing: .22em; color: var(--accent); }
+        .p-arrow {
+            position: absolute; top: 1.8rem; left: 1.8rem;
+            width: 38px; height: 38px;
+            border: 1px solid rgba(184,147,90,.3); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; transform: scale(.8);
+            transition: opacity .4s, transform .4s;
+        }
+        .p-arrow svg { width: 13px; fill: none; stroke: var(--accent); stroke-width: 1.5; }
+        .p-card:hover .p-arrow { opacity: 1; transform: scale(1); }
+        .p-tag { font-size: .85rem; letter-spacing: .2em; text-transform: uppercase; color: var(--accent); margin-bottom: .6rem; }
+        .p-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.2rem; font-weight: 300; line-height: 1.1; margin-bottom: .8rem;
+            max-width: 260px;
+        }
+        .p-info {
+            font-size: .85rem; color: var(--accent); letter-spacing: .08em;
+            margin-bottom: 1rem; max-width: 240px;
+        }
+        .p-desc {
+            font-size: .9rem; line-height: 1.8; color: rgba(232,228,220,0.9);
+            max-width: 280px; opacity: 0; transform: translateX(-20px);
+            transition: all .6s cubic-bezier(.23,1,.32,1);
+        }
+        .p-card:hover .p-desc { opacity: 1; transform: translateX(0); }
+
+        /* ── PORTRAIT ── */
+        #portrait {
+            padding: 0 5rem 10rem;
+            display: flex; flex-direction: column; align-items: center;
+            position: relative;
+        }
+        .portrait-glow {
+            position: absolute; top: 45%; left: 50%; width: 70vw; height: 70vw;
+            background: radial-gradient(circle, 
+                rgba(255, 140, 0, 0.28) 0%, 
+                rgba(184, 147, 90, 0.12) 40%, 
+                transparent 75%
+            );
+            transform: translate(-50%, -50%); pointer-events: none; z-index: 0;
+            filter: blur(80px);
+            opacity: 1;
+        }
+        .portrait-frame {
+            width: 42vw; max-width: 560px; min-width: 280px;
+            aspect-ratio: 3/4;
+            position: relative; overflow: hidden;
+            background: var(--card);
+            border: 1px solid var(--border);
+            box-shadow: 0 40px 100px rgba(0,0,0,.55);
+            z-index: 1;
+        }
+
+        .portrait-frame img {
+            width: 100%; height: 100%; object-fit: cover; object-position: top center;
+            display: block;
+            filter: grayscale(15%) contrast(1.05);
+            transition: transform .8s cubic-bezier(.23,1,.32,1), filter .6s;
+        }
+        .portrait-frame:hover img { transform: scale(1.04); filter: grayscale(0%) contrast(1); }
+        /* Placeholder cuando no hay foto todavía */
+        .portrait-placeholder {
+            position: absolute; inset: 0;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 1.4rem; border: 1px dashed rgba(184,147,90,.25); margin: 2rem;
+        }
+        .portrait-placeholder span {
+            font-size: .82rem; letter-spacing: .2em; text-transform: uppercase; color: var(--muted);
+        }
+        .portrait-corner {
+            position: absolute; width: 22px; height: 22px;
+            border-color: rgba(184,147,90,.4); border-style: solid;
+        }
+        .portrait-corner.tl { top: 16px; left: 16px; border-width: 1px 0 0 1px; }
+        .portrait-corner.tr { top: 16px; right: 16px; border-width: 1px 1px 0 0; }
+        .portrait-corner.bl { bottom: 16px; left: 16px; border-width: 0 0 1px 1px; }
+        .portrait-corner.br { bottom: 16px; right: 16px; border-width: 0 1px 1px 0; }
+        .portrait-caption {
+            margin-top: 2rem; text-align: center;
+        }
+        .portrait-caption h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(1.6rem, 3vw, 2.4rem);
+            font-weight: 300; letter-spacing: .02em; margin-bottom: .5rem;
+        }
+        .portrait-caption h3 em { font-style: italic; color: var(--accent); }
+        .portrait-caption p {
+            font-size: .88rem; letter-spacing: .22em; text-transform: uppercase; color: var(--muted);
+        }
+
+        /* ── LIGHTBOX (PRO) ── */
+        #lightbox {
+            position: fixed; inset: 0; z-index: 2000;
+            background: rgba(7,8,10,.99);
+            display: none; align-items: stretch; justify-content: stretch;
+            backdrop-filter: blur(25px);
+        }
+        .lightbox-container {
+            display: grid; grid-template-columns: 1fr 1fr;
+            width: 100%; height: 100%;
+        }
+        .lightbox-gallery {
+            position: relative; overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(0,0,0,0.1);
+        }
+        .lightbox-img {
+            max-width: 95%; max-height: 90vh; object-fit: contain;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.8);
+        }
+        
+        .lightbox-info {
+            background: var(--card); border-left: 1px solid var(--border);
+            padding: 5rem 3.5rem; overflow-y: auto;
+            display: flex; flex-direction: column; gap: 2.5rem;
+            position: relative;
+        }
+        .lb-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 3.2rem; font-weight: 300; line-height: 1.1; color: var(--text);
+        }
+        .lb-meta { display: flex; flex-direction: column; gap: 1rem; }
+        .lb-meta-item { border-top: 1px solid var(--border); padding-top: .8rem; }
+        .lb-meta-label { font-size: .68rem; letter-spacing: .3em; text-transform: uppercase; color: var(--accent); margin-bottom: .4rem; }
+        .lb-meta-val { font-size: .95rem; color: var(--text); }
+        .lb-desc {
+            font-size: 1.05rem; line-height: 1.9; color: var(--muted);
+            margin-top: 1rem;
+        }
+        .lb-desc b { color: var(--text); font-weight: 500; }
+        .lb-desc strong { color: var(--accent); font-weight: 600; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.1em; }
+        .lb-desc h4 { color: var(--accent); font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 300; margin: 2rem 0 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
+
+        .lightbox-close {
+            position: absolute; top: 2.5rem; right: 2.5rem;
+            width: 50px; height: 50px; background: rgba(255,255,255,.05);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; z-index: 2100; transition: background .3s, transform .3s;
+        }
+        .lightbox-close:hover { background: rgba(255,255,255,.12); transform: rotate(90deg); }
+        .lightbox-close svg { width: 18px; stroke: #fff; pointer-events: none; }
+        
+        .lightbox-nav {
+            position: absolute; top: 50%; left: 0; width: 100%;
+            transform: translateY(-50%);
+            display: flex; justify-content: space-between; padding: 0 2rem;
+            pointer-events: none;
+            z-index: 2050;
+        }
+        .lightbox-btn {
+            width: 64px; height: 64px; background: rgba(7, 8, 10, 0.4);
+            border: 1px solid rgba(255,255,255,.15);
+            backdrop-filter: blur(10px);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; pointer-events: auto; transition: all .4s cubic-bezier(.23,1,.32,1);
+        }
+        .lightbox-btn:hover { background: var(--accent); border-color: var(--accent); transform: scale(1.1); }
+        .lightbox-btn:hover svg { stroke: var(--bg); }
+        .lightbox-btn svg { width: 22px; stroke: #fff; fill: none; transition: stroke .3s; }
+
+        @media (max-width: 1100px) {
+            .lightbox-container { grid-template-columns: 1fr; grid-template-rows: 1fr auto; }
+            .lightbox-info { border-left: none; border-top: 1px solid var(--border); padding: 3rem 2rem; }
+            .lb-title { font-size: 2.5rem; }
+            .lightbox-nav { bottom: auto; top: 50%; width: 100%; justify-content: space-between; padding: 0 1rem; }
+        }
+
+        /* ── QUOTE ── */
+        #quote { padding: 13rem 5rem; text-align: center; max-width: 860px; margin: 0 auto; }
+        .quote-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(1.9rem, 3.8vw, 4rem);
+            font-weight: 300; font-style: italic; line-height: 1.45;
+            margin-bottom: 2.5rem;
+        }
+        .quote-attr { font-size: .88rem; letter-spacing: .3em; text-transform: uppercase; color: var(--accent); opacity: 0; }
+
+        /* ── SERVICES ── */
+        #services { padding: 8rem 5rem; border-top: 1px solid var(--border); }
+        .services-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 1px; background: var(--border); margin-top: 5rem;
+        }
+        .svc { background: var(--bg); padding: 3.2rem; transition: background .35s; }
+        .svc:hover { background: var(--card); }
+        .svc-num { font-size: .85rem; letter-spacing: .3em; color: var(--accent); margin-bottom: 1.8rem; }
+        .svc-title { font-family: 'Cormorant Garamond', serif; font-size: 1.75rem; font-weight: 300; margin-bottom: 1.4rem; }
+        .svc-desc { font-size: 1rem; line-height: 1.85; color: var(--muted); }
+
+        /* ── EXPERIENCE ── */
+        #experience { padding: 8rem 5rem; border-top: 1px solid var(--border); max-width: 1400px; margin: 0 auto; }
+        .exp-list { margin-top: 4.5rem; display: flex; flex-direction: column; gap: 0; }
+        .exp-item {
+            display: grid; grid-template-columns: 200px 1fr auto;
+            align-items: start; gap: 4rem;
+            padding: 2.8rem 0; border-bottom: 1px solid var(--border);
+            transition: background .3s;
+        }
+        .exp-item:first-child { border-top: 1px solid var(--border); }
+        .exp-year { font-size: .88rem; letter-spacing: .14em; color: var(--accent); padding-top: .25rem; }
+        .exp-title { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 300; margin-bottom: .5rem; }
+        .exp-body { font-size: 1rem; line-height: 1.85; color: var(--muted); }
+        .exp-tag { font-size: .85rem; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); padding-top: .3rem; }
+
+        /* ── CONTACT ── */
+        #contact {
+            padding: 12rem 5rem;
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 7rem; align-items: center;
+            border-top: 1px solid var(--border);
+        }
+        .contact-heading {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(3rem, 6vw, 7rem);
+            font-weight: 300; line-height: .9;
+            letter-spacing: -.02em; margin-top: 1.5rem;
+        }
+        .contact-heading em { font-style: italic; color: var(--accent); }
+        .contact-items { display: flex; flex-direction: column; gap: 2.5rem; }
+        .c-item { border-bottom: 1px solid var(--border); padding-bottom: 2rem; }
+        .c-label { font-size: .85rem; letter-spacing: .25em; text-transform: uppercase; color: var(--muted); margin-bottom: .45rem; }
+        .c-value { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 300; }
+        .c-value a { color: inherit; text-decoration: none; transition: color .3s; }
+        .c-value a:hover { color: var(--accent); }
+
+        /* ── FOOTER ── */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 2rem 5rem;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        footer p { font-size: .88rem; letter-spacing: .14em; color: var(--muted); }
+        .footer-links { display: flex; gap: 2rem; }
+        .footer-links a {
+            font-size: .88rem; letter-spacing: .16em; text-transform: uppercase;
+            color: var(--muted); text-decoration: none; transition: color .3s;
+        }
+        .footer-links a:hover { color: var(--accent); }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 900px) {
+            nav { padding: 1.5rem 2rem; }
+            .nav-links { display: none; }
+            .hero-content { padding: 0 2rem; max-width: 100%; }
+            #about { grid-template-columns: 1fr; padding: 7rem 2rem; gap: 4rem; }
+            .projects-header { padding: 0 2rem; }
+            .projects-track { padding: 0 2rem 4rem; }
+            .p-card { min-width: 280px; }
+            #services { padding: 5rem 2rem; }
+            .services-grid { grid-template-columns: 1fr; }
+            #experience { padding: 5rem 2rem; }
+            .exp-item { grid-template-columns: 1fr; gap: 1rem; }
+            #contact { padding: 7rem 2rem; grid-template-columns: 1fr; gap: 4rem; }
+            footer { padding: 1.5rem 2rem; flex-direction: column; gap: 1rem; text-align: center; }
+            .edu-skills { grid-template-columns: 1fr; }
+            #quote { padding: 8rem 2rem; }
+        }
+
+        ::selection { background: var(--accent); color: var(--bg); }
+        ::-webkit-scrollbar { width: 3px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--accent-dim); }
+    </style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- ─── NAV ─── -->
+<nav>
+    <a href="#" class="nav-logo">C.C.</a>
+    <ul class="nav-links">
+        <li><a href="#about">Sobre mí</a></li>
+        <li><a href="#projects">Proyectos</a></li>
+        <li><a href="#services">Servicios</a></li>
+        <li><a href="#experience">Experiencia</a></li>
+        <li><a href="#contact">Contacto</a></li>
+    </ul>
+</nav>
+
+<!-- ─── HERO ─── -->
+<section id="hero">
+    <canvas id="hero-canvas"></canvas>
+    <div class="hero-content">
+        <div class="hero-eyebrow">Arquitecta &amp; Maestra Mayor de Obras — Salta, Argentina</div>
+        <h1 class="hero-name">
+            <span class="line"><span class="word">Celeste</span></span>
+            <span class="line"><span class="word"><em>Celaya</em></span></span>
+        </h1>
+        <p class="hero-desc">
+            Concibo la arquitectura como el equilibrio perfecto entre la precisión técnica y
+            la capacidad de generar experiencias sensoriales significativas para el usuario.
+        </p>
+        <a href="#projects" class="hero-cta">Ver proyectos</a>
+    </div>
+    <div class="scroll-indicator">
+        <div class="scroll-line"></div>
+        <span>Scroll</span>
+    </div>
+</section>
+
+<!-- ─── MARQUEE ─── -->
+<div class="marquee-section">
+    <div class="marquee-track">
+        <span class="marquee-item">Diseño Arquitectónico <span>✦</span></span>
+        <span class="marquee-item">Complejo Agroindustrial <span>✦</span></span>
+        <span class="marquee-item">Vivienda Colectiva <span>✦</span></span>
+        <span class="marquee-item">Equipamiento Educativo <span>✦</span></span>
+        <span class="marquee-item">Enoturismo <span>✦</span></span>
+        <span class="marquee-item">Renders &amp; Visualización 3D <span>✦</span></span>
+        <span class="marquee-item">Documentación Técnica <span>✦</span></span>
+        <span class="marquee-item">Diseño Arquitectónico <span>✦</span></span>
+        <span class="marquee-item">Complejo Agroindustrial <span>✦</span></span>
+        <span class="marquee-item">Vivienda Colectiva <span>✦</span></span>
+        <span class="marquee-item">Equipamiento Educativo <span>✦</span></span>
+        <span class="marquee-item">Enoturismo <span>✦</span></span>
+        <span class="marquee-item">Renders &amp; Visualización 3D <span>✦</span></span>
+        <span class="marquee-item">Documentación Técnica <span>✦</span></span>
+    </div>
+</div>
+
+<!-- ─── ABOUT ─── -->
+<section id="about">
+    <div>
+        <div class="section-label reveal">— Sobre mí</div>
+        <h2 class="about-heading reveal">Técnica,<br>sensibilidad<br>y <em>lugar</em></h2>
+        <div class="about-text">
+            <p class="reveal">
+                Mi perfil combina una sólida base técnica, adquirida desde mi formación como Maestra Mayor de Obras,
+                con una capacidad creativa orientada a la resolución de sistemas constructivos complejos.
+            </p>
+            <p class="reveal">
+                Me destaco por mi sensibilidad para comunicar conceptos y crear atmósferas únicas.
+                Soy apasionada por el diseño integral y el aprendizaje continuo — concibo la arquitectura
+                como el equilibrio perfecto entre precisión técnica y experiencias sensoriales significativas.
+            </p>
+        </div>
+        <div class="about-stats">
+            <div class="stat-item reveal">
+                <div class="stat-number" data-count="4">0</div>
+                <div class="stat-label">Proyectos académicos</div>
+            </div>
+            <div class="stat-item reveal">
+                <div class="stat-number" data-count="2025">0</div>
+                <div class="stat-label">Año de graduación</div>
+            </div>
+            <div class="stat-item reveal">
+                <div class="stat-number" data-count="6">0</div>
+                <div class="stat-label">Años de formación técnica</div>
+            </div>
+            <div class="stat-item reveal">
+                <div class="stat-number" data-count="10" data-suffix="+">0</div>
+                <div class="stat-label">Softwares</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="about-right">
+        <div style="position:relative;">
+            <div class="about-frame reveal">
+                <!-- FOTO DE CELESTE — renombra tu imagen como: assets/img/foto-celeste-perfil.jpg -->
+                <img src="assets/img/foto-celeste-perfil1.jpg" alt="Arq. Celeste Celaya" class="about-photo"
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+                <!-- Plano de respaldo si no hay foto aún -->
+                <svg viewBox="0 0 280 380" fill="none" xmlns="http://www.w3.org/2000/svg" style="opacity:.16">
+                    <!-- Gran cubierta -->
+                    <rect x="20" y="60" width="240" height="290" stroke="#b8935a" stroke-width=".8"/>
+                    <!-- Cilindro central -->
+                    <circle cx="140" cy="200" r="42" stroke="#b8935a" stroke-width=".7"/>
+                    <circle cx="140" cy="200" r="28" stroke="#b8935a" stroke-width=".4" stroke-dasharray="4 3"/>
+                    <!-- Programa izquierdo: bodega -->
+                    <rect x="30" y="80" width="85" height="105" stroke="#b8935a" stroke-width=".4"/>
+                    <!-- Programa derecho: museo -->
+                    <rect x="165" y="80" width="85" height="105" stroke="#b8935a" stroke-width=".4"/>
+                    <!-- Área turística inferior -->
+                    <rect x="30" y="295" width="220" height="45" stroke="#b8935a" stroke-width=".4"/>
+                    <!-- Patio central -->
+                    <rect x="125" y="200" width="30" height="85" stroke="#b8935a" stroke-width=".3" stroke-dasharray="3 3"/>
+                    <!-- Eje de simetría -->
+                    <line x1="140" y1="60" x2="140" y2="350" stroke="#b8935a" stroke-width=".35" stroke-dasharray="5 4"/>
+                    <!-- Cotas -->
+                    <line x1="8" y1="60"  x2="20" y2="60"  stroke="#b8935a" stroke-width=".35"/>
+                    <line x1="8" y1="350" x2="20" y2="350" stroke="#b8935a" stroke-width=".35"/>
+                    <line x1="8" y1="60"  x2="8"  y2="350" stroke="#b8935a" stroke-width=".35"/>
+                    <text x="-4" y="210" fill="#b8935a" font-size="6.5" font-family="DM Mono" transform="rotate(-90,-4,210)">290 m</text>
+                    <!-- Ruta -->
+                    <line x1="20" y1="370" x2="260" y2="370" stroke="#b8935a" stroke-width=".5" stroke-dasharray="8 4"/>
+                    <text x="100" y="378" fill="#b8935a" font-size="5.5" font-family="DM Mono">RN 40</text>
+                </svg>
+                <span class="about-frame-label">Arq. Celeste Celaya</span>
+            </div>
+            <div class="about-badge">FAU · UCASAL 2025</div>
+        </div>
+
+        <!-- Educación + Skills -->
+        <div class="edu-skills reveal">
+            <div class="edu-block">
+                <div class="block-title">Educación</div>
+                <div class="edu-item">
+                    <div class="edu-year">2021 — 2025</div>
+                    <div class="edu-name">Arquitectura</div>
+                    <div class="edu-inst">FAU · Universidad Católica de Salta</div>
+                </div>
+                <div class="edu-item" style="margin-top:1.2rem">
+                    <div class="edu-year">2014 — 2020</div>
+                    <div class="edu-name">Maestro Mayor de Obras</div>
+                    <div class="edu-inst">E.E.T. 3149 Dr. Mera Figueroa</div>
+                </div>
+            </div>
+            <div class="skills-block">
+                <div class="block-title">Software</div>
+                <div class="skill-tags">
+                    <span class="skill-tag">AutoCAD</span>
+                    <span class="skill-tag">Sketchup</span>
+                    <span class="skill-tag">Revit</span>
+                    <span class="skill-tag">Enscape</span>
+                    <span class="skill-tag">Lumion</span>
+                    <span class="skill-tag">V-Ray</span>
+                    <span class="skill-tag">Photoshop</span>
+                    <span class="skill-tag">Illustrator</span>
+                    <span class="skill-tag">Adobe InDesign</span>
+                    <span class="skill-tag">Rhino 3D</span>
+                    <span class="skill-tag">Grasshopper</span>
+                    <span class="skill-tag">3ds Max + V-Ray</span>
+                    <span class="skill-tag">Twinmotion</span>
+                    <span class="skill-tag">Archicad</span>
+                </div>
+                <div class="block-title" style="margin-top:1.4rem">Habilidades</div>
+                <div class="skill-tags">
+                    <span class="skill-tag soft">Creatividad</span>
+                    <span class="skill-tag soft">Resolución de problemas</span>
+                    <span class="skill-tag soft">Trabajo en equipo</span>
+                    <span class="skill-tag soft">Comunicación eficaz</span>
+                    <span class="skill-tag soft">Pensamiento crítico</span>
+                    <span class="skill-tag soft">Adaptabilidad</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ─── PORTRAIT ─── -->
+<section id="portrait">
+    <div class="portrait-glow"></div>
+    <div class="portrait-frame reveal">
+        <img src="assets/img/foto-celeste-retrato1.jpg" alt="Arq. Celeste Celaya"
+             onerror="this.style.display='none'">
+    </div>
+</section>
+
+<!-- ─── PROJECTS ─── -->
+<section id="projects">
+    <div class="projects-header">
+        <div>
+            <div class="section-label reveal">— Portfolio</div>
+            <h2 class="projects-heading reveal">Proyectos <em>seleccionados</em></h2>
+        </div>
+        <span class="projects-count reveal">004 trabajos</span>
+    </div>
+    <div class="projects-scroll-outer">
+        <div class="projects-track" id="pTrack">
+
+            <!-- 01 · CONJUNTO VITIVINÍCOLA -->
+            <div class="p-card" data-gallery="assets/img/proyecto-1-vitivinicola-animana1.jpg,assets/img/proyecto-1-vitivinicola-animana2.jpg,assets/img/proyecto-1-vitivinicola-animana3.jpg">
+                <div class="p-card-inner">
+                    <div class="p-bg p-bg-1"></div>
+                    <img src="assets/img/proyecto-1-vitivinicola-animana1.jpg" alt="Conjunto Vitivinícola" class="p-image">
+                    <svg class="p-drawing" viewBox="0 0 280 380" fill="none">
+                        <!-- Vista aérea esquemática del conjunto en Animaná -->
+                        <rect x="15" y="15" width="250" height="350" stroke="#b8935a" stroke-width=".6"/>
+                        <!-- Ruta Nacional 40 -->
+                        <line x1="15" y1="60" x2="265" y2="60" stroke="#b8935a" stroke-width=".5" stroke-dasharray="12 5"/>
+                        <!-- Predio de intervención -->
+                        <rect x="30" y="80" width="220" height="240" stroke="#b8935a" stroke-width=".8"/>
+                        <!-- Bodega (bloque A) -->
+                        <rect x="45" y="100" width="90" height="65" stroke="#b8935a" stroke-width=".4"/>
+                        <!-- Enoturismo (bloque B) -->
+                        <rect x="150" y="100" width="85" height="65" stroke="#b8935a" stroke-width=".4"/>
+                        <!-- Viñedos (trama) -->
+                        <line x1="30"  y1="185" x2="250" y2="185" stroke="#b8935a" stroke-width=".3"/>
+                        <line x1="30"  y1="205" x2="250" y2="205" stroke="#b8935a" stroke-width=".3"/>
+                        <line x1="30"  y1="225" x2="250" y2="225" stroke="#b8935a" stroke-width=".3"/>
+                        <line x1="30"  y1="245" x2="250" y2="245" stroke="#b8935a" stroke-width=".3"/>
+                        <line x1="30"  y1="265" x2="250" y2="265" stroke="#b8935a" stroke-width=".3"/>
+                        <line x1="80"  y1="185" x2="80"  y2="320" stroke="#b8935a" stroke-width=".2" stroke-dasharray="2 4"/>
+                        <line x1="130" y1="185" x2="130" y2="320" stroke="#b8935a" stroke-width=".2" stroke-dasharray="2 4"/>
+                        <line x1="180" y1="185" x2="180" y2="320" stroke="#b8935a" stroke-width=".2" stroke-dasharray="2 4"/>
+                        <line x1="230" y1="185" x2="230" y2="320" stroke="#b8935a" stroke-width=".2" stroke-dasharray="2 4"/>
+                        <!-- Acceso -->
+                        <path d="M140 320 L140 365" stroke="#b8935a" stroke-width=".6"/>
+                    </svg>
+                    <div class="p-overlay">
+                        <div class="p-hint">Toca para explorar</div>
+                        <span class="p-num">01</span>
+                        <div class="p-arrow"><svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg></div>
+                        <div class="p-tag">Agroindustrial y Enoturístico · 2025</div>
+                        <h3 class="p-title">Conjunto Vitivinícola</h3>
+                        <p class="p-info">Animaná, Salta · 80.45 Ha</p>
+                        <p class="p-desc">Una intervención integral en los Valles Calchaquíes que fusiona paisaje, tradición y futuro en un complejo agroindustrial de 80 hectáreas.</p>
+                        <div class="p-full-content" style="display:none">
+                            <p style="margin-bottom:1.5rem; font-size: 1.25rem; color: var(--text)">"ANIMANÁ: DONDE EL PAISAJE SE RECORRE, LA TRADICIÓN SE VIVE Y EL FUTURO SE CONSTRUYE."</p>
+                            <p>Esta visión fundamenta una intervención integral que celebra la identidad y el patrimonio local. El proyecto busca coherencia en las relaciones de movilidad, gestión de recursos y economía a través del diseño, asegurando el desarrollo local sin romper la armonía natural de los Valles Calchaquíes.</p>
+                            <div style="margin-top:2rem; background: rgba(255,255,255,0.03); padding: 1.5rem; border-radius: 4px; border-left: 2px solid var(--accent)">
+                                <strong>Estado:</strong> <span>Proyecto de Graduación</span><br>
+                                <strong>Año:</strong> <span>2025</span><br>
+                                <strong>Tipología:</strong> <span>Complejo Agroindustrial y Enoturístico</span><br>
+                                <strong>Ubicación:</strong> <span>Animaná, Salta, Arg.</span><br>
+                                <strong>Superficie:</strong> <span>80.45 hectáreas</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 02 · BODEGA ALBOR -->
+            <div class="p-card" data-gallery="assets/img/proyecto-2-bodega-albor1.jpg,assets/img/proyecto-2-bodega-albor2.jpg,assets/img/proyecto-2-bodega-albor3.jpg">
+                <div class="p-card-inner">
+                    <div class="p-bg p-bg-2"></div>
+                    <img src="assets/img/proyecto-2-bodega-albor1.jpg" alt="Bodega Albor" class="p-image">
+                    <svg class="p-drawing" viewBox="0 0 280 380" fill="none">
+                        <!-- Gran cubierta metálica -->
+                        <rect x="18" y="55" width="244" height="295" stroke="#b8935a" stroke-width=".8"/>
+                        <!-- Cilindro Corten central -->
+                        <circle cx="140" cy="200" r="50" stroke="#b8935a" stroke-width=".7"/>
+                        <!-- Rampa helicoidal (espiral) -->
+                        <path d="M140 165 C165 165 175 185 175 200 C175 215 165 235 140 235 C115 235 105 215 105 200 C105 185 115 170 133 167" stroke="#b8935a" stroke-width=".4" fill="none"/>
+                        <!-- Programa bodega -->
+                        <rect x="28" y="70" width="88" height="110" stroke="#b8935a" stroke-width=".4"/>
+                        <!-- Programa museo -->
+                        <rect x="164" y="70" width="88" height="110" stroke="#b8935a" stroke-width=".4"/>
+                        <!-- Patio exterior -->
+                        <rect x="28" y="310" width="224" height="30" stroke="#b8935a" stroke-width=".4"/>
+                        <!-- Eje -->
+                        <line x1="140" y1="55" x2="140" y2="350" stroke="#b8935a" stroke-width=".35" stroke-dasharray="5 4"/>
+                        <!-- Circulación -->
+                        <path d="M28 180 L90 180" stroke="#b8935a" stroke-width=".3" stroke-dasharray="3 3"/>
+                        <path d="M190 180 L252 180" stroke="#b8935a" stroke-width=".3" stroke-dasharray="3 3"/>
+                    </svg>
+                    <div class="p-overlay">
+                        <div class="p-hint">Toca para explorar</div>
+                        <span class="p-num">02</span>
+                        <div class="p-arrow"><svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg></div>
+                        <div class="p-tag">Enoturístico — 2025</div>
+                        <h3 class="p-title">Bodega Albor</h3>
+                        <p class="p-info">Animaná, Salta · 10.000 m²</p>
+                        <p class="p-desc">Exploración de la dualidad climática a través de una arquitectura sensorial que protege y celebra la producción vitivinícola de altura.</p>
+                        <div class="p-full-content" style="display:none">
+                            <p style="margin-bottom:1.5rem; font-size: 1.15rem; color: var(--text)"><b>LA DUALIDAD COMO MATRIZ PROYECTUAL: DE LA EXPOSICIÓN A LA INTROSPECCIÓN</b></p>
+                            <p>En los Valles Calchaquíes, el clima dicta una ley de extremos: la radiación solar más intensa del mundo frente a la frescura y el silencio de la sombra. Bodega Albor no solo se implanta en este escenario, sino que se convierte en un instrumento que procesa esta dualidad, emulando la fisiología de la vid de altura.</p>
+                            <p style="margin-top:1rem">Al igual que el fruto requiere de una exposición solar extrema para fortalecer su hollejo y de la oscuridad absoluta para su maduración técnica, la arquitectura de Albor propone un recorrido sensorial que transita entre estos dos estados.</p>
+                            
+                            <h4>Estrategia Espacial y Material</h4>
+                            <p><b>La Cubierta Articuladora:</b> Bajo un gran techo metálico que unifica el conjunto, se distribuyen de manera independiente pero fluida la bodega, el museo, los patios, la recepción turística y el área administrativa. El diseño permite que cada programa mantenga su autonomía funcional.</p>
+                            <p style="margin-top:0.8rem"><b>El Cilindro de Acero Corten:</b> Como pieza central y pivotante, un gran cilindro de acero corten actúa como el corazón del proyecto. En su interior, una rampa helicoidal organiza la circulación vertical y horizontal.</p>
+                            <p style="margin-top:0.8rem"><b>Privacidad y Recorrido:</b> El diseño jerarquiza los flujos, logrando una separación programática clara entre la gestión administrativa y la experiencia del visitante.</p>
+
+                            <div style="margin-top:2rem; background: rgba(255,255,255,0.03); padding: 1.5rem; border-radius: 4px; border-left: 2px solid var(--accent)">
+                                <strong>Estado:</strong> <span>Proyecto de Graduación</span><br>
+                                <strong>Año:</strong> <span>2025</span><br>
+                                <strong>Tipología:</strong> <span>Complejo de Enoturístico</span><br>
+                                <strong>Ubicación:</strong> <span>Animaná, Salta, Arg.</span><br>
+                                <strong>Superficie:</strong> <span>10.000 m2</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 03 · TORRE DE VIVIENDAS -->
+            <div class="p-card" data-gallery="assets/img/proyecto-3-torre-viviendas-pinares1.jpg,assets/img/proyecto-3-torre-viviendas-pinares2.jpg,assets/img/proyecto-3-torre-viviendas-pinares3.jpg">
+                <div class="p-card-inner">
+                    <div class="p-bg p-bg-3"></div>
+                    <img src="assets/img/proyecto-3-torre-viviendas-pinares1.jpg" alt="Torre de Viviendas" class="p-image">
+                    <svg class="p-drawing" viewBox="0 0 280 380" fill="none">
+                        <!-- Silueta torre 30 pisos -->
+                        <rect x="95" y="30" width="90" height="320" stroke="#b8935a" stroke-width=".8"/>
+                        <!-- Subsuelo -->
+                        <rect x="85" y="340" width="110" height="18" stroke="#b8935a" stroke-width=".5"/>
+                        <!-- Plantas tipo (líneas) -->
+                        <line x1="95" y1="80"  x2="185" y2="80"  stroke="#b8935a" stroke-width=".3"/>
+                        <line x1="95" y1="130" x2="185" y2="130" stroke="#b8935a" stroke-width=".3"/>
+                        <line x1="95" y1="180" x2="185" y2="180" stroke="#b8935a" stroke-width=".3"/>
+                        <line x1="95" y1="230" x2="185" y2="230" stroke="#b8935a" stroke-width=".3"/>
+                        <line x1="95" y1="280" x2="185" y2="280" stroke="#b8935a" stroke-width=".3"/>
+                        <!-- Núcleo central -->
+                        <rect x="125" y="30" width="30" height="320" stroke="#b8935a" stroke-width=".4" stroke-dasharray="5 3"/>
+                        <!-- Balcones -->
+                        <rect x="82" y="50"  width="13" height="8" stroke="#b8935a" stroke-width=".3"/>
+                        <rect x="185" y="50"  width="13" height="8" stroke="#b8935a" stroke-width=".3"/>
+                        <rect x="82" y="100" width="13" height="8" stroke="#b8935a" stroke-width=".3"/>
+                        <rect x="185" y="100" width="13" height="8" stroke="#b8935a" stroke-width=".3"/>
+                        <rect x="82" y="150" width="13" height="8" stroke="#b8935a" stroke-width=".3"/>
+                        <rect x="185" y="150" width="13" height="8" stroke="#b8935a" stroke-width=".3"/>
+                        <!-- Entorno verde -->
+                        <rect x="18"  y="340" width="65" height="30" stroke="#b8935a" stroke-width=".3" rx="2"/>
+                        <rect x="197" y="340" width="65" height="30" stroke="#b8935a" stroke-width=".3" rx="2"/>
+                        <line x1="15" y1="370" x2="265" y2="370" stroke="#b8935a" stroke-width=".6"/>
+                        <text x="24" y="378" fill="#b8935a" font-size="5.5" font-family="DM Mono">RUTA PROV. 26</text>
+                    </svg>
+                    <div class="p-overlay">
+                        <div class="p-hint">Toca para explorar</div>
+                        <span class="p-num">03</span>
+                        <div class="p-arrow"><svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg></div>
+                        <div class="p-tag">Vivienda — 2024</div>
+                        <h3 class="p-title">Torre Pinares</h3>
+                        <p class="p-info">Cerrillos, Salta · 13.889 m²</p>
+                        <p class="p-desc">Arquitectura en altura que integra vivienda y vida comunitaria en un entorno de transición entre la ciudad y el paisaje natural.</p>
+                        <div class="p-full-content" style="display:none">
+                            <p>El área a intervenir se localiza en el norte de la República Argentina, dentro del municipio de cerrillos. El terreno se encuentra al sur de la ciudad de salta, en el barrio pinares, a 12 km del casco histórico de salta capital, y colinda con la ruta provincial n°26.</p>
+                            <p style="margin-top:1rem">El edificio se inserta en un entorno urbano de carácter discontinuo, donde la separación entre espacios construidos y áreas verdes ofrece valiosas oportunidades para integrar el diseño arquitectónico con el paisaje circundante.</p>
+                            <p style="margin-top:1rem">Con una altura de 30 pisos y un subsuelo de servicios, la torre ofrece una diversidad de tipologías que incluyen unidades de monoambiente y departamentos de dos y tres dormitorios.</p>
+                            
+                            <h4>Vida Comunitaria</h4>
+                            <p>Más allá de la vivienda, el proyecto se concibe como un conjunto integral que fomenta la vida comunitaria y el bienestar físico. Dentro del predio se despliega una infraestructura de servicios de primer nivel que incluye:</p>
+                            <p style="margin-top:0.8rem"><b>Áreas de recreación:</b> Piscinas, asadores y gimnasios de última generación.</p>
+                            <p style="margin-top:0.8rem"><b>Espacios deportivos:</b> Canchas y circuitos aeróbicos integrados al paisaje circundante.</p>
+                            
+                            <div style="margin-top:2rem; background: rgba(255,255,255,0.03); padding: 1.5rem; border-radius: 4px; border-left: 2px solid var(--accent)">
+                                <strong>Estado:</strong> <span>Proyecto de 4to año</span><br>
+                                <strong>Año:</strong> <span>2024</span><br>
+                                <strong>Tipología:</strong> <span>Torre de viviendas</span><br>
+                                <strong>Superficie terreno:</strong> <span>13.889 m2</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 04 · ESCUELA CHACHAPOYAS -->
+            <div class="p-card" data-gallery="assets/img/proyecto-4-escuela-chachapoyas1.jpg,assets/img/proyecto-4-escuela-chachapoyas2.jpg,assets/img/proyecto-4-escuela-chachapoyas3.jpg">
+                <div class="p-card-inner">
+                    <div class="p-bg p-bg-4"></div>
+                    <img src="assets/img/proyecto-4-escuela-chachapoyas1.jpg" alt="Escuela Chachapoyas" class="p-image">
+                    <svg class="p-drawing" viewBox="0 0 280 380" fill="none">
+                        <!-- Bloque primaria -->
+                        <rect x="18" y="60" width="110" height="180" stroke="#b8935a" stroke-width=".8"/>
+                        <!-- Bloque secundaria -->
+                        <rect x="152" y="60" width="110" height="180" stroke="#b8935a" stroke-width=".8"/>
+                        <!-- Núcleo central SUM/Gimnasio -->
+                        <rect x="90" y="70" width="100" height="160" stroke="#b8935a" stroke-width=".6" stroke-dasharray="5 3"/>
+                        <!-- Aulas primaria -->
+                        <rect x="24" y="72"  width="42" height="35" stroke="#b8935a" stroke-width=".3"/>
+                        <rect x="24" y="115" width="42" height="35" stroke="#b8935a" stroke-width=".3"/>
+                        <rect x="24" y="158" width="42" height="35" stroke="#b8935a" stroke-width=".3"/>
+                        <!-- Aulas secundaria -->
+                        <rect x="214" y="72"  width="42" height="35" stroke="#b8935a" stroke-width=".3"/>
+                        <rect x="214" y="115" width="42" height="35" stroke="#b8935a" stroke-width=".3"/>
+                        <rect x="214" y="158" width="42" height="35" stroke="#b8935a" stroke-width=".3"/>
+                        <!-- Patios de expansión -->
+                        <rect x="18"  y="255" width="110" height="60" stroke="#b8935a" stroke-width=".4" rx="1"/>
+                        <rect x="152" y="255" width="110" height="60" stroke="#b8935a" stroke-width=".4" rx="1"/>
+                        <!-- Av. Bicentenario -->
+                        <line x1="18" y1="340" x2="262" y2="340" stroke="#b8935a" stroke-width=".6"/>
+                        <text x="50" y="350" fill="#b8935a" font-size="5.5" font-family="DM Mono">AV. BICENTENARIO</text>
+                        <!-- Norte -->
+                        <path d="M252 75 L252 55 L245 65 M252 55 L259 65" stroke="#b8935a" stroke-width=".4"/>
+                        <text x="249" y="85" fill="#b8935a" font-size="6" font-family="DM Mono">N</text>
+                    </svg>
+                    <div class="p-overlay">
+                        <div class="p-hint">Toca para explorar</div>
+                        <span class="p-num">04</span>
+                        <div class="p-arrow"><svg viewBox="0 0 24 24"><path d="M7 17L17 7M17 7H7M17 7v10"/></svg></div>
+                        <div class="p-tag">Educativo — 2023</div>
+                        <h3 class="p-title">Escuela Chachapoyas</h3>
+                        <p class="p-info">Salta Capital · 8.000 m²</p>
+                        <p class="p-desc">Arquitectura educativa como motor de cambio social, integrando niveles académicos bajo criterios de sustentabilidad pasiva.</p>
+                        <div class="p-full-content" style="display:none">
+                            <p>La propuesta se ubica en Chachapoyas, en un sector con fragmentos urbanos actualmente abandonados, y busca actuar como un motor de reactivación para los barrios cercanos mediante la incorporación de equipamiento educativo de calidad. El proyecto integra en un mismo predio una escuela primaria y una secundaria.</p>
+                            
+                            <h4>Estrategia Proyectual</h4>
+                            <p>La estrategia proyectual se basa en una volumetría única organizada en tres sectores: <b>primaria</b>, <b>secundaria</b> y un <b>núcleo central compartido</b> que alberga el Gimnasio-SUM, concebido como un espacio flexible.</p>
+                            <p style="margin-top:1rem">El diseño prioriza el confort ambiental mediante recursos de <b>sustentabilidad pasiva</b>, incorporando patios internos que favorecen la iluminación y ventilación natural, además de patios de expansión vinculados a cada aula.</p>
+                            
+                            <div style="margin-top:2rem; background: rgba(255,255,255,0.03); padding: 1.5rem; border-radius: 4px; border-left: 2px solid var(--accent)">
+                                <strong>Estado:</strong> <span>Proyecto de 3er año</span><br>
+                                <strong>Año:</strong> <span>2023</span><br>
+                                <strong>Tipología:</strong> <span>Complejo Educativo Integrado</span><br>
+                                <strong>Superficie terreno:</strong> <span>8.000 m2</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ─── QUOTE ─── -->
+<section id="quote">
+    <p class="quote-text">
+        "La arquitectura es el equilibrio perfecto entre<br>la precisión técnica y la capacidad de generar<br>experiencias sensoriales y significativas."
+    </p>
+    <span class="quote-attr">— Celeste Celaya · Manifiesto de práctica</span>
+</section>
+
+<!-- ─── SERVICES ─── -->
+<section id="services">
+    <div class="section-label reveal">— Servicios</div>
+    <h2 class="projects-heading reveal" style="margin-bottom:0">Lo que <em>ofrezco</em></h2>
+    <div class="services-grid">
+        <div class="svc reveal">
+            <div class="svc-num">01</div>
+            <h3 class="svc-title">Diseño Arquitectónico</h3>
+            <p class="svc-desc">Desde anteproyecto hasta documentación ejecutiva. Viviendas, locales comerciales y equipamiento institucional, con enfoque en calidad espacial y sensibilidad al entorno.</p>
+        </div>
+        <div class="svc reveal">
+            <div class="svc-num">02</div>
+            <h3 class="svc-title">Renders &amp; Visualización 3D</h3>
+            <p class="svc-desc">Modelado y renderizado en Sketchup, Revit, Enscape, Lumion y V-Ray. Imágenes fotorrealistas, recorridos virtuales y planimetría técnica para comunicar proyectos con precisión.</p>
+        </div>
+        <div class="svc reveal">
+            <div class="svc-num">03</div>
+            <h3 class="svc-title">Documentación Técnica</h3>
+            <p class="svc-desc">Elaboración de planos en AutoCAD y Revit para ejecución de obra. Gestión de documentación para permisos, loteos e intervenciones con normativa vigente.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ─── EXPERIENCE ─── -->
+<section id="experience">
+    <div class="section-label reveal">— Experiencia</div>
+    <h2 class="projects-heading reveal" style="margin-bottom:0">Recorrido <em>profesional</em></h2>
+    <div class="exp-list">
+        <div class="exp-item reveal">
+            <div class="exp-year">2025</div>
+            <div>
+                <div class="exp-title">Proyecto de Graduación — Bodega Albor &amp; Conjunto Vitivinícola</div>
+                <p class="exp-body">Diseño integral de un complejo agroindustrial y enoturístico en Animaná, Valle Calchaquí, Salta. 80.45 hectáreas de intervención territorial con enfoque en identidad local, paisaje y circuito turístico.</p>
+            </div>
+            <div class="exp-tag">FAU · UCASAL</div>
+        </div>
+        <div class="exp-item reveal">
+            <div class="exp-year">2023 – 2024</div>
+            <div>
+                <div class="exp-title">Pasantías — IPV (Instituto Provincial de Vivienda)</div>
+                <p class="exp-body">Trabajo en equipo con arquitectos e ingenieros para el diseño de loteos en terrenos INTA, Cerrillos. Dibujo 2D, 3D, renderizado y colaboración en la creación de normativa provisoria para el sector.</p>
+            </div>
+            <div class="exp-tag">Salta, Argentina</div>
+        </div>
+        <div class="exp-item reveal">
+            <div class="exp-year">2022</div>
+            <div>
+                <div class="exp-title">Desarrollo de Planos — Vivienda Unifamiliar</div>
+                <p class="exp-body">Elaboración de planos completos para la ejecución de una vivienda en Cachi, Salta. Documentación técnica, plantas, cortes, fachadas y detalles constructivos.</p>
+            </div>
+            <div class="exp-tag">Cachi, Salta</div>
+        </div>
+    </div>
+</section>
+
+<!-- ─── CONTACT ─── -->
+<section id="contact">
+    <div>
+        <div class="section-label reveal">— Contacto</div>
+        <h2 class="contact-heading reveal">
+            Hablemos<br>de tu<br><em>proyecto</em>
+        </h2>
+    </div>
+    <div class="contact-items">
+        <div class="c-item reveal">
+            <div class="c-label">Email</div>
+            <div class="c-value"><a href="mailto:daiana28100@gmail.com">daiana28100@gmail.com</a></div>
+        </div>
+        <div class="c-item reveal">
+            <div class="c-label">Teléfono / WhatsApp</div>
+            <div class="c-value"><a href="https://wa.me/543874421631" target="_blank">+54 387 442-1631</a></div>
+        </div>
+        <div class="c-item reveal">
+            <div class="c-label">Ubicación</div>
+            <div class="c-value">Salta, Argentina</div>
+        </div>
+        <div class="c-item reveal">
+            <div class="c-label">Disponibilidad</div>
+            <div class="c-value">Aceptando proyectos</div>
+        </div>
+        <div class="c-item reveal">
+            <div class="c-label">Idiomas</div>
+            <div class="c-value">Español · Inglés básico</div>
+        </div>
+    </div>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+    <p>© 2026 Celeste Celaya · Arquitecta | Maestra Mayor de Obras — FAU · UCASAL</p>
+    <div class="footer-links">
+        <a href="#">Instagram</a>
+        <a href="https://www.linkedin.com/in/celeste-daiana-celaya-r%C3%ADos-4700783a6/?originalSubdomain=ar" target="_blank">LinkedIn</a>
+        <a href="https://wa.me/543874421631" target="_blank">WhatsApp</a>
+    </div>
+</footer>
+
+<!-- ─── LIGHTBOX (PRO) ─── -->
+<div id="lightbox">
+    <div class="lightbox-close"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></div>
+    <div class="lightbox-container">
+        <div class="lightbox-gallery">
+            <img src="" alt="" class="lightbox-img">
+            <div class="lightbox-nav">
+                <div class="lightbox-btn prev"><svg viewBox="0 0 24 24" stroke-width="1.5"><path d="M15 18l-6-6 6-6"/></svg></div>
+                <div class="lightbox-btn next"><svg viewBox="0 0 24 24" stroke-width="1.5"><path d="M9 18l6-6-6-6"/></svg></div>
+            </div>
+        </div>
+        <div class="lightbox-info">
+            <div id="lb-content-wrap">
+                <h2 class="lb-title" id="lb-title">Nombre del Proyecto</h2>
+                <div class="lb-desc" id="lb-desc">Descripción detallada del proyecto cargada dinámicamente.</div>
+                <div class="lb-meta">
+                    <div class="lb-meta-item">
+                        <div class="lb-meta-label">Categoría / Año</div>
+                        <div class="lb-meta-val" id="lb-tag">—</div>
+                    </div>
+                    <div class="lb-meta-item">
+                        <div class="lb-meta-label">Ubicación / Datos Técnicos</div>
+                        <div class="lb-meta-val" id="lb-info">—</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+gsap.registerPlugin(ScrollTrigger);
+
+// ── CURSOR ─────────────────────────────────────────────────
+const cur  = document.getElementById('cursor');
+const ring = document.getElementById('cursor-ring');
+let mx=0, my=0, rx=0, ry=0;
+
+document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    gsap.to(cur, { x: mx, y: my, duration: .08 });
+});
+(function tick() {
+    rx += (mx - rx) * .11;
+    ry += (my - ry) * .11;
+    ring.style.left = rx + 'px';
+    ring.style.top  = ry + 'px';
+    requestAnimationFrame(tick);
+})();
+
+document.querySelectorAll('a, .p-card, .svc, .exp-item').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+        gsap.to(cur,  { width:14, height:14, duration:.25 });
+        gsap.to(ring, { width:58, height:58, borderColor:'rgba(184,147,90,.75)', duration:.25 });
+    });
+    el.addEventListener('mouseleave', () => {
+        gsap.to(cur,  { width:7, height:7, duration:.25 });
+        gsap.to(ring, { width:34, height:34, borderColor:'rgba(184,147,90,.45)', duration:.25 });
+    });
+});
+
+// ── THREE.JS HERO — Interior Espiral (Rampa, Cactus, Lavanda) ────────
+(function() {
+    const canvas   = document.getElementById('hero-canvas');
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setClearColor(0x000000, 0);
+
+    const scene  = new THREE.Scene();
+    scene.fog    = new THREE.FogExp2(0x000000, 0.022);
+    const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 200);
+    camera.position.set(0, 4, 14);
+    camera.lookAt(0, 1, 0);
+
+    function onResize() {
+        const w = canvas.offsetWidth, h = canvas.offsetHeight;
+        renderer.setSize(w, h, false);
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+    }
+    onResize();
+    window.addEventListener('resize', onResize);
+
+    const gold = new THREE.Color(0xb8935a);
+    const G0 = 0xe8d090, G1 = 0xc9a96e, G2 = 0x9a7845, G3 = 0x5a3e1e, G4 = 0x2e2010;
+    const wm  = (c, o=1) => new THREE.LineBasicMaterial({color:c, transparent:o<1, opacity:o});
+    const mm  = (c, o)   => new THREE.MeshBasicMaterial({color:c, transparent:true, opacity:o, side:THREE.DoubleSide, depthWrite:false});
+
+    function ring(cx, cy, cz, r, segs, mat){
+        const pts = [];
+        for(let i=0; i<=segs; i++){
+            const a = (i/segs)*Math.PI*2;
+            pts.push(new THREE.Vector3(cx+Math.cos(a)*r, cy, cz+Math.sin(a)*r));
+        }
+        return new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), mat);
+    }
+
+    const grp = new THREE.Group();
+    scene.add(grp);
+
+    // ── SUELO ──
+    const floorMesh = new THREE.Mesh(new THREE.CircleGeometry(9.5, 64), mm(0x100e08, 0.95));
+    floorMesh.rotation.x = -Math.PI/2; floorMesh.position.y = -0.01;
+    grp.add(floorMesh);
+    grp.add(ring(0, 0, 0, 9.5, 64, wm(G3, 0.5)));
+
+    // ── PARED CILÍNDRICA EXTERIOR ──
+    const WALL_R = 9.2, WALL_H = 6.5, WALL_SEGS = 64;
+    for(let y=0; y<=WALL_H; y+=0.5){
+        const op = y===0||y===WALL_H ? 0.75 : 0.22;
+        const col= y===0||y===WALL_H ? G2 : G3;
+        grp.add(ring(0, y, 0, WALL_R, WALL_SEGS, wm(col, op)));
+    }
+    for(let i=0; i<24; i++){
+        const a = (i/24)*Math.PI*2, x = Math.cos(a)*WALL_R, z = Math.sin(a)*WALL_R;
+        const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(x,0,z), new THREE.Vector3(x,WALL_H,z)]), wm(G3, i%6===0 ? 0.45 : 0.18));
+        grp.add(line);
+    }
+
+    // ── RAMPA HELICOIDAL ──
+    const R_INNER = 2.8, R_OUTER = 7.8, RAMP_H = 3.2, RAMP_SEGS = 120, TURNS = 1.22;
+    const outerPts = [], innerPts = [];
+    for(let i=0; i<=RAMP_SEGS; i++){
+        const t = i/RAMP_SEGS, a = t*TURNS*Math.PI*2, y = t*RAMP_H + 0.02;
+        outerPts.push(new THREE.Vector3(Math.cos(a)*R_OUTER, y, Math.sin(a)*R_OUTER));
+        innerPts.push(new THREE.Vector3(Math.cos(a)*R_INNER, y, Math.sin(a)*R_INNER));
+    }
+    grp.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(outerPts), wm(G0)));
+    grp.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(innerPts), wm(G1, 0.85)));
+    
+    // Superficie Rampa
+    const rampVerts = [], rampIdx = [];
+    for(let i=0; i<=RAMP_SEGS; i++){
+        rampVerts.push(innerPts[i].x, innerPts[i].y, innerPts[i].z, outerPts[i].x, outerPts[i].y, outerPts[i].z);
+    }
+    for(let i=0; i<RAMP_SEGS; i++){
+        const a=i*2, b=a+1, c=a+2, d=a+3; rampIdx.push(a,b,c, b,d,c);
+    }
+    const rampGeo = new THREE.BufferGeometry();
+    rampGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(rampVerts), 3));
+    rampGeo.setIndex(rampIdx); rampGeo.computeVertexNormals();
+    grp.add(new THREE.Mesh(rampGeo, mm(0xd4a840, 0.07)));
+
+    // ── JARDÍN CIRCULAR CENTRAL ──
+    const GARDEN_R = 2.6;
+    grp.add(ring(0, 0.1, 0, GARDEN_R, 64, wm(G1, 0.8)));
+    for(let y=0; y<=0.3; y+=0.08) grp.add(ring(0, y, 0, GARDEN_R, 48, wm(G2, y===0||y>=0.28 ? 0.5 : 0.2)));
+
+    // Cactus
+    function mkCactus(cx, cz, h, col) {
+        const base = 0.35, r = h*0.065, costillas = 6;
+        for(let k=0; k<costillas; k++){
+            const a = (k/costillas)*Math.PI*2, dx = Math.cos(a)*r, dz = Math.sin(a)*r;
+            grp.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(cx+dx,base,cz+dz), new THREE.Vector3(cx+dx,base+h,cz+dz)]), wm(col, 0.65)));
+        }
+        for(let y=base; y<=base+h; y+=h/8){
+            const circlePts = [];
+            for(let i=0; i<=16; i++){ const a = (i/16)*Math.PI*2; circlePts.push(new THREE.Vector3(cx+Math.cos(a)*r, y, cz+Math.sin(a)*r)); }
+            grp.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(circlePts), wm(col, 0.4)));
+        }
+    }
+    mkCactus(0.0, 0.0, 2.8, G1); mkCactus(0.45, 0.55, 2.3, G2); mkCactus(-0.55, 0.25, 1.9, G2);
+
+    // Lavandas (simplificadas)
+    for(let i=0; i<60; i++){
+        const a = Math.random()*Math.PI*2, r = Math.random()*GARDEN_R, h = 0.1 + Math.random()*0.3;
+        const cx = Math.cos(a)*r, cz = Math.sin(a)*r;
+        grp.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(cx, 0.35, cz), new THREE.Vector3(cx, 0.35+h, cz)]), wm(G3, 0.5)));
+    }
+
+    // ── FIGURAS HUMANAS (esquemáticas) ──
+    function mkHuman(t, walkPhase, op) {
+        const a = t*TURNS*Math.PI*2, y = t*RAMP_H + 0.04, r = (R_INNER+R_OUTER)*0.5;
+        const hx = Math.cos(a)*r, hz = Math.sin(a)*r, hy = y;
+        const hGroup = new THREE.Group(); hGroup.position.set(hx, hy, hz);
+        // Cuerpo simple (línea vertical)
+        const body = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0,0,0), new THREE.Vector3(0,1.6,0)]), wm(G1, op));
+        hGroup.add(body);
+        // Cabeza
+        const head = ring(0, 1.7, 0, 0.1, 12, wm(G0, op));
+        hGroup.add(head);
+        grp.add(hGroup);
+    }
+    [0.1, 0.35, 0.6, 0.85].forEach((t, i) => mkHuman(t, i*0.2, 0.7 - i*0.1));
+
+    scene.add(grp);
+    grp.position.x = 1.0;
+
+    let tRotX=0, tRotY=0, cRotX=0, cRotY=0, scrollY=0;
+    document.addEventListener('mousemove', e => {
+        tRotY =  (e.clientX/innerWidth  - 0.5) * 0.45;
+        tRotX = -(e.clientY/innerHeight - 0.5) * 0.15;
+    });
+    window.addEventListener('scroll', () => scrollY = window.scrollY);
+
+    (function animate() {
+        requestAnimationFrame(animate);
+        const t = Date.now() * 0.001;
+        cRotX += (tRotX - cRotX) * 0.05;
+        cRotY += (tRotY - cRotY) * 0.05;
+        grp.rotation.y = cRotY + t * 0.05;
+        camera.position.y = 4 - scrollY * 0.002;
+        renderer.render(scene, camera);
+    })();
+})();
+
+// ── HERO ENTRANCE ──────────────────────────────────────────
+gsap.timeline({ defaults:{ ease:'power3.out' } })
+    .to('.hero-name .word',  { y:0, duration:1.3, stagger:.18, delay:.3 })
+    .to('.hero-eyebrow',     { opacity:1, y:0, duration:.85 }, '-=.7')
+    .to('.hero-desc',        { opacity:1, y:0, duration:.85 }, '-=.55')
+    .to('.hero-cta',         { opacity:1, y:0, duration:.85 }, '-=.5')
+    .to('.scroll-indicator', { opacity:1, duration:.7 },        '-=.3');
+
+// ── HERO PARALLAX ──────────────────────────────────────────
+gsap.to('.hero-content', {
+    y:160, opacity:0, ease:'none',
+    scrollTrigger:{ trigger:'#hero', start:'top top', end:'bottom top', scrub:true }
+});
+
+// ── GENERAL REVEAL ─────────────────────────────────────────
+gsap.utils.toArray('.reveal').forEach(el => {
+    gsap.to(el, {
+        opacity:1, y:0, duration:.9, ease:'power3.out',
+        scrollTrigger:{ trigger:el, start:'top 86%', toggleActions:'play none none reverse' }
+    });
+});
+
+// ── DECK DE CARTAS — PROJECTS ─────────────────────────────
+const cards = gsap.utils.toArray('.p-card');
+const numCards = cards.length;
+
+// Posición inicial: cartas apiladas con leve rotación/desplazamiento
+// La carta [0] es la de atrás, la [numCards-1] es la del frente
+const stackInit = [
+    { rotation: -5,   x: -14, y: 18, zIndex: 1 },   // carta 1 — más atrás
+    { rotation:  3,   x:  8,  y: 11, zIndex: 2 },
+    { rotation: -2,   x: -5,  y: 5,  zIndex: 3 },
+    { rotation:  0,   x:  0,  y: 0,  zIndex: 4 },   // carta 4 — al frente
+];
+
+cards.forEach((card, i) => {
+    gsap.set(card, stackInit[i]);
+});
+
+// Timeline: cada carta sale volando hacia la izquierda al scrollear
+const deckTl = gsap.timeline({
+    scrollTrigger: {
+        trigger: '#projects',
+        start: 'bottom bottom',            // pin cuando toda la sección es visible
+        end: () => `+=${numCards * innerHeight * 0.9}`,
+        pin: true, pinSpacing: true,
+        scrub: 1.4, invalidateOnRefresh: true,
+    }
+});
+
+// Las cartas salen de la más al frente (índice 3) a la más atrás (índice 0)
+[...cards].reverse().forEach((card, i) => {
+    deckTl.to(card, {
+        x: '-140vw',
+        rotation: -10,
+        opacity: 0,
+        ease: 'power1.in',
+        duration: 0.8,
+    }, i * 0.9);
+});
+
+// ── QUOTE BLUR REVEAL ──────────────────────────────────────
+const quotePara = document.querySelector('.quote-text');
+const quoteWords = quotePara.innerHTML.split(/(\s+|<br>)/);
+quotePara.innerHTML = '';
+quoteWords.forEach(w => {
+    if (w === '<br>') {
+        quotePara.innerHTML += '<br>';
+    } else if (w.trim().length > 0) {
+        quotePara.innerHTML += `<span class="q-word" style="display:inline-block; filter:blur(18px); opacity:0; transform:translateY(15px); pointer-events:none;">${w}</span>`;
+    } else {
+        quotePara.innerHTML += w;
+    }
+});
+
+gsap.to('.q-word', {
+    filter: 'blur(0px)',
+    opacity: 1,
+    y: 0,
+    duration: 1.2,
+    stagger: {
+        amount: 2.4,
+        from: "start"
+    },
+    ease: 'power2.out',
+    scrollTrigger: {
+        trigger: '#quote',
+        start: 'top 75%',
+    }
+});
+
+// ── QUOTE REVEAL (ATTR) ───────────────────────────────────
+gsap.to('.quote-attr', {
+    opacity:1, duration:1, delay:.8, ease:'power2.out',
+    scrollTrigger:{ trigger:'.quote-attr', start:'top 80%' }
+});
+
+// ── COUNTERS ───────────────────────────────────────────────
+document.querySelectorAll('[data-count]').forEach(el => {
+    const target = +el.dataset.count;
+    const suffix = el.dataset.suffix || '';
+    ScrollTrigger.create({
+        trigger: el, start: 'top 82%',
+        onEnter: () => gsap.to({ v:0 }, {
+            v:target, duration:1.6, ease:'power2.out',
+            onUpdate() { el.textContent = Math.round(this.targets()[0].v) + suffix; }
+        })
+    });
+});
+
+// ── ABOUT PARALLAX ─────────────────────────────────────────
+gsap.to('.about-frame', {
+    y:-60, ease:'none',
+    scrollTrigger:{ trigger:'#about', start:'top bottom', end:'bottom top', scrub:true }
+});
+
+// ── 3D TILT CARDS ──────────────────────────────────────────
+document.querySelectorAll('.p-card').forEach(card => {
+    const inner = card.querySelector('.p-card-inner');
+    card.addEventListener('mousemove', e => {
+        const r = card.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width  - .5;
+        const y = (e.clientY - r.top)  / r.height - .5;
+        gsap.to(inner, {
+            rotationY: x * 12, rotationX: -y * 12,
+            transformPerspective: 900, duration: .4, ease: 'power1.out'
+        });
+    });
+    card.addEventListener('mouseleave', () => {
+        gsap.to(inner, { rotationY:0, rotationX:0, duration:.7, ease:'power2.out' });
+    });
+});
+
+// ── EXPERIENCE HOVER LINE ──────────────────────────────────
+document.querySelectorAll('.exp-item').forEach(item => {
+    item.addEventListener('mouseenter', () => {
+        gsap.to(item, { paddingLeft:'1.5rem', duration:.3, ease:'power2.out' });
+    });
+    item.addEventListener('mouseleave', () => {
+        gsap.to(item, { paddingLeft:'0rem', duration:.3, ease:'power2.out' });
+    });
+});
+
+// ── PROJECT GALLERY & LIGHTBOX (PRO) ──────────────────────
+const lightbox = document.getElementById('lightbox');
+const lbImg    = lightbox.querySelector('.lightbox-img');
+const lbTitle  = document.getElementById('lb-title');
+const lbDesc   = document.getElementById('lb-desc');
+const lbTag    = document.getElementById('lb-tag');
+const lbInfo   = document.getElementById('lb-info');
+
+let currentGallery = [];
+let lbIndex = 0;
+
+function updateLbImage() {
+    gsap.fromTo(lbImg, { opacity: 0, scale: 0.95 }, { opacity: 1, scale: 1, duration: 0.4, ease: 'power2.out' });
+    lbImg.src = currentGallery[lbIndex];
+}
+
+document.querySelectorAll('.p-card').forEach(card => {
+    const galleryArr = card.dataset.gallery ? card.dataset.gallery.split(',') : [];
+    const imgEl = card.querySelector('.p-image');
+    let cycleInterval = null;
+    let cycleIndex = 0;
+
+    // Data extraction
+    const titleVal = card.querySelector('.p-title').innerText;
+    const descVal  = card.querySelector('.p-full-content').innerHTML;
+    const tagVal   = card.querySelector('.p-tag').innerText;
+    const infoVal  = card.querySelector('.p-info').innerText;
+
+    // Cycling on hover
+    card.addEventListener('mouseenter', () => {
+        if (galleryArr.length <= 1) return;
+        cycleInterval = setInterval(() => {
+            cycleIndex = (cycleIndex + 1) % galleryArr.length;
+            imgEl.src = galleryArr[cycleIndex];
+        }, 1200);
+    });
+
+    card.addEventListener('mouseleave', () => {
+        if (cycleInterval) clearInterval(cycleInterval);
+        cycleIndex = 0;
+        imgEl.src = galleryArr[0];
+    });
+
+    // Zoom on Click
+    card.addEventListener('click', (e) => {
+        e.stopPropagation();
+        currentGallery = galleryArr;
+        lbIndex = cycleIndex; 
+
+        // Populate info
+        lbTitle.innerText = titleVal;
+        lbDesc.innerHTML  = descVal;
+        lbTag.innerText   = tagVal;
+        lbInfo.innerText  = infoVal;
+
+        updateLbImage();
+        gsap.set(lightbox, { display: 'flex', opacity: 0 });
+        gsap.to(lightbox, { opacity: 1, duration: 0.5 });
+        
+        // Stagger entrance of text parts
+        gsap.fromTo('#lb-content-wrap > *', 
+            { opacity: 0, x: 30 }, 
+            { opacity: 1, x: 0, duration: 0.8, stagger: 0.15, ease: 'power3.out', delay: 0.2 }
+        );
+    });
+});
+
+// Lightbox Controls
+lightbox.querySelector('.lightbox-close').addEventListener('click', () => {
+    gsap.to(lightbox, { opacity: 0, duration: 0.4, onComplete: () => {
+        lightbox.style.display = 'none';
+    }});
+});
+
+lightbox.querySelector('.next').addEventListener('click', (e) => {
+    e.stopPropagation();
+    lbIndex = (lbIndex + 1) % currentGallery.length;
+    updateLbImage();
+});
+
+lightbox.querySelector('.prev').addEventListener('click', (e) => {
+    e.stopPropagation();
+    lbIndex = (lbIndex - 1 + currentGallery.length) % currentGallery.length;
+    updateLbImage();
+});
+
+window.addEventListener('keydown', (e) => {
+    if (lightbox.style.display === 'flex') {
+        if (e.key === 'Escape') lightbox.querySelector('.lightbox-close').click();
+        if (e.key === 'ArrowRight') lightbox.querySelector('.next').click();
+        if (e.key === 'ArrowLeft') lightbox.querySelector('.prev').click();
+    }
+});
+</script>
+</body>
+</html>
